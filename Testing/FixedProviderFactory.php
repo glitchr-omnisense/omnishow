@@ -1,12 +1,12 @@
 <?php
 
-namespace Omnifilm\Testing;
+namespace Omnishow\Testing;
 
-use Omnifilm\Config;
-use Omnifilm\Model\Offer;
-use Omnifilm\Model\Work;
-use Omnifilm\ProviderFactory;
-use Omnifilm\ProviderInterface;
+use Omnishow\Config;
+use Omnishow\Model\Offer;
+use Omnishow\Model\Work;
+use Omnishow\ProviderFactory;
+use Omnishow\ProviderInterface;
 
 /** FixedProvider's factory: "fixed", answering from the works it holds. */
 final class FixedProviderFactory extends ProviderFactory
@@ -21,7 +21,7 @@ final class FixedProviderFactory extends ProviderFactory
 
     protected function populate(Config $c): void
     {
-        $c->defaults(['omnifilm.factory_name' => 'fixed', 'omnifilm.factory_title' => 'Fixed works', 'omnifilm.required_options' => []]);
+        $c->defaults(['omnishow.factory_name' => 'fixed', 'omnishow.factory_title' => 'Fixed works', 'omnishow.required_options' => []]);
     }
 
     protected function build(Config $c): ProviderInterface

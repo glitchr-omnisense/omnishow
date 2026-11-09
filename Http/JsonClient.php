@@ -1,9 +1,9 @@
 <?php
 
-namespace Omnifilm\Http;
+namespace Omnishow\Http;
 
-use Omnifilm\Exception\ProviderException;
-use Omnifilm\Exception\UnreachableException;
+use Omnishow\Exception\ProviderException;
+use Omnishow\Exception\UnreachableException;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

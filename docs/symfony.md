@@ -5,7 +5,7 @@ order: 15
 
 # Symfony
 
-There is no Omnifilm bundle, and omnibridge/symfony has no Omnifilm wiring yet: a Symfony
+There is no Omnishow bundle, and omnibridge/symfony has no Omnishow wiring yet: a Symfony
 application declares the registry as a service of its own. Every factory takes the HTTP client as
 its one constructor argument (`?Symfony\Contracts\HttpClient\HttpClientInterface`), which
 autowiring fills with the application's `http_client` service.
@@ -18,14 +18,14 @@ services:
     _defaults:
         autowire: true
 
-    Omnifilm\Wikidata\WikidataFactory: ~
-    Omnifilm\Tmdb\TmdbFactory: ~
+    Omnishow\Wikidata\WikidataFactory: ~
+    Omnishow\Tmdb\TmdbFactory: ~
 
-    Omnifilm\Registry:
+    Omnishow\Registry:
         arguments:
             $factories:
-                - '@Omnifilm\Wikidata\WikidataFactory'
-                - '@Omnifilm\Tmdb\TmdbFactory'
+                - '@Omnishow\Wikidata\WikidataFactory'
+                - '@Omnishow\Tmdb\TmdbFactory'
             $config:
                 open:
                     factory: wikidata
@@ -53,20 +53,20 @@ A tag gathers the factories instead of listing them:
 ```yaml
 services:
     _instanceof:
-        Omnifilm\ProviderFactoryInterface:
-            tags: ['omnifilm.factory']
+        Omnishow\ProviderFactoryInterface:
+            tags: ['omnishow.factory']
 
-    Omnifilm\Registry:
+    Omnishow\Registry:
         arguments:
-            $factories: !tagged_iterator omnifilm.factory
-            $config: '%omnifilm.providers%'
+            $factories: !tagged_iterator omnishow.factory
+            $config: '%omnishow.providers%'
 ```
 
 ## Using it
 
 ```php
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Registry;
+use Omnishow\Model\WorkRef;
+use Omnishow\Registry;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -90,7 +90,7 @@ final class FilmSheet
 
 Nothing is built when the container compiles: a provider is built, and its required options
 checked, the first time the registry is asked for it, then kept. Records are not cached by
-Omnifilm: the application's cache keeps them, within each source's terms. `Work::toArray()` gives a
+Omnishow: the application's cache keeps them, within each source's terms. `Work::toArray()` gives a
 plain array to keep; a record is rebuilt from the provider, not from that array (there is no
 `fromArray()`).
 

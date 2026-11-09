@@ -5,13 +5,13 @@ order: 16
 
 # Laravel
 
-omnibridge/laravel, the bridge that hosts omnibase in Laravel, has no Omnifilm provider yet. The
+omnibridge/laravel, the bridge that hosts omnibase in Laravel, has no Omnishow provider yet. The
 registry is plain PHP: a service provider of the application's builds it once, from a config file,
 with a `symfony/http-client` client (every provider requires that package; Laravel's own HTTP
 client is Guzzle's, which the factories do not take).
 
 ```php
-// config/omnifilm.php
+// config/omnishow.php
 return [
     'providers' => [
         'open' => ['factory' => 'wikidata', 'options' => [
@@ -26,16 +26,16 @@ return [
 ```
 
 ```php
-// app/Providers/OmnifilmServiceProvider.php
+// app/Providers/OmnishowServiceProvider.php
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Omnifilm\Registry;
-use Omnifilm\Tmdb\TmdbFactory;
-use Omnifilm\Wikidata\WikidataFactory;
+use Omnishow\Registry;
+use Omnishow\Tmdb\TmdbFactory;
+use Omnishow\Wikidata\WikidataFactory;
 use Symfony\Component\HttpClient\HttpClient;
 
-final class OmnifilmServiceProvider extends ServiceProvider
+final class OmnishowServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
@@ -45,7 +45,7 @@ final class OmnifilmServiceProvider extends ServiceProvider
             return new Registry([
                 new WikidataFactory($http),
                 new TmdbFactory($http),
-            ], config('omnifilm.providers'));
+            ], config('omnishow.providers'));
         });
     }
 }
@@ -56,8 +56,8 @@ registry where it is needed:
 
 ```php
 use Illuminate\Support\Facades\Cache;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Registry;
+use Omnishow\Model\WorkRef;
+use Omnishow\Registry;
 
 final class FilmController
 {

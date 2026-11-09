@@ -1,8 +1,8 @@
 <?php
 
-namespace Omnifilm;
+namespace Omnishow;
 
-use Omnifilm\Exception\InvalidConfigException;
+use Omnishow\Exception\InvalidConfigException;
 
 /**
  * A provider's configuration while its factory builds it: the options
@@ -34,7 +34,7 @@ final class Config extends \ArrayObject
     {
         $missing = array_values(array_filter($keys, fn (string $key) => !isset($this[$key]) || '' === $this[$key] || [] === $this[$key]));
         if ($missing) {
-            throw new InvalidConfigException(\sprintf('The "%s" provider needs: %s.', $this->string('omnifilm.factory_name') ?? '?', implode(', ', $missing)));
+            throw new InvalidConfigException(\sprintf('The "%s" provider needs: %s.', $this->string('omnishow.factory_name') ?? '?', implode(', ', $missing)));
         }
     }
 

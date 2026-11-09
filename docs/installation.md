@@ -6,26 +6,26 @@ order: 10
 # Installation
 
 ```sh
-composer require omnisense/omnifilm omnifilm/wikidata     # one package per provider
+composer require omnisense/omnishow omnishow/wikidata     # one package per provider
 ```
 
 ## Requirements
 
 - PHP 8.2 or later.
-- `omnisense/omnifilm` requires `symfony/http-client-contracts` (^3.0) and PHP's `mbstring`
+- `omnisense/omnishow` requires `symfony/http-client-contracts` (^3.0) and PHP's `mbstring`
   extension (`ext-mbstring`: the core shortens error bodies with `mb_substr()`), nothing else.
 - Every provider requires `symfony/http-client` (^6.4, ^7.0 or ^8.0), a library that stands alone
   and loads no framework: its factory takes the application's client
   (`Symfony\Contracts\HttpClient\HttpClientInterface`) and, given none, makes its own
   (`HttpClient::create(['timeout' => 20])`).
-- `omnifilm/tmdb` also requires `php-tmdb/api` (^4.1), `nyholm/psr7` (^1.8) and
+- `omnishow/tmdb` also requires `php-tmdb/api` (^4.1), `nyholm/psr7` (^1.8) and
   `psr/event-dispatcher` (^1.0): it runs php-tmdb's client over the same HTTP client. php-tmdb
   requires `php-http/discovery`, a Composer plugin it does not need here:
   `"allow-plugins": {"php-http/discovery": false}` in the application's `composer.json`.
 - PHP's `mbstring` extension, present in most builds: Composer refuses to install on a PHP without
   it.
 
-Omnifilm runs the same in plain PHP, in a worker, in Laravel and in Symfony; there is no bundle or
+Omnishow runs the same in plain PHP, in a worker, in Laravel and in Symfony; there is no bundle or
 Laravel provider yet ([Symfony](symfony.md), [Laravel](laravel.md)).
 
 ## Plain PHP
@@ -38,18 +38,18 @@ was given, as a provider would have returned them.
 
 require __DIR__.'/vendor/autoload.php';
 
-use Omnifilm\Model\Credit;
-use Omnifilm\Model\Identifiers;
-use Omnifilm\Model\Offer;
-use Omnifilm\Model\OfferKind;
-use Omnifilm\Model\Query;
-use Omnifilm\Model\Role;
-use Omnifilm\Model\Scheme;
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
-use Omnifilm\Registry;
-use Omnifilm\Testing\FixedProviderFactory;
+use Omnishow\Model\Credit;
+use Omnishow\Model\Identifiers;
+use Omnishow\Model\Offer;
+use Omnishow\Model\OfferKind;
+use Omnishow\Model\Query;
+use Omnishow\Model\Role;
+use Omnishow\Model\Scheme;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
+use Omnishow\Registry;
+use Omnishow\Testing\FixedProviderFactory;
 
 // Records a provider would have returned.
 $peaks = Identifiers::of(['imdb' => 'tt0098936', 'tvdb' => 70533]);
@@ -115,17 +115,17 @@ operator (Wikimedia's policy; the factory refuses one without). This script call
 
 require __DIR__.'/vendor/autoload.php';
 
-use Omnifilm\Model\ImageKind;
-use Omnifilm\Model\Query;
-use Omnifilm\Model\Role;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
-use Omnifilm\Registry;
-use Omnifilm\Wikidata\WikidataFactory;
+use Omnishow\Model\ImageKind;
+use Omnishow\Model\Query;
+use Omnishow\Model\Role;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
+use Omnishow\Registry;
+use Omnishow\Wikidata\WikidataFactory;
 use Symfony\Component\HttpClient\HttpClient;
 
 $films = new Registry([new WikidataFactory(HttpClient::create(['timeout' => 30]))], [
-    'open' => ['factory' => 'wikidata', 'options' => ['user_agent' => 'OmnisenseDocs/1.0 (https://github.com/glitchr-omnisense/omnifilm)']],
+    'open' => ['factory' => 'wikidata', 'options' => ['user_agent' => 'OmnisenseDocs/1.0 (https://github.com/glitchr-omnisense/omnishow)']],
 ]);
 
 // A search: two calls (CirrusSearch narrowed to films, then the records).

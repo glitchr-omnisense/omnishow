@@ -1,8 +1,8 @@
 <?php
 
-namespace Omnifilm\Model;
+namespace Omnishow\Model;
 
-use Omnifilm\Exception\InvalidArgumentException;
+use Omnishow\Exception\InvalidArgumentException;
 
 /** A search by title: the words, and what narrows them. */
 final readonly class Query

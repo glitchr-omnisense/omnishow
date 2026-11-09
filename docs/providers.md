@@ -5,12 +5,12 @@ order: 80
 
 # Writing a provider
 
-A provider is a package `omnifilm/<name>`, namespace `Omnifilm\<Name>\`, requiring
-`omnisense/omnifilm` and `symfony/http-client` (or the library it wraps, which must be
+A provider is a package `omnishow/<name>`, namespace `Omnishow\<Name>\`, requiring
+`omnisense/omnishow` and `symfony/http-client` (or the library it wraps, which must be
 framework-free).
 
-1. **The factory** extends `ProviderFactory`: `populate()` sets `omnifilm.factory_name`,
-   `omnifilm.factory_title`, `omnifilm.required_options` and the defaults; `build()` makes the
+1. **The factory** extends `ProviderFactory`: `populate()` sets `omnishow.factory_name`,
+   `omnishow.factory_title`, `omnishow.required_options` and the defaults; `build()` makes the
    provider. Its constructor takes `?HttpClientInterface $http = null` - the application's client,
    a `MockHttpClient` or `RecordedHttpClient` in tests, `HttpClient::create()` when none.
 2. **The provider** implements `ProviderInterface` and the capability interfaces it has.
@@ -49,23 +49,23 @@ framework-free).
 <?php
 
 // ExampleFactory.php and ExampleProvider.php, here in one listing
-namespace Omnifilm\Example;
+namespace Omnishow\Example;
 
-use Omnifilm\Capabilities;
-use Omnifilm\Config;
-use Omnifilm\Exception\NotSupportedException;
-use Omnifilm\Http\Data;
-use Omnifilm\Http\JsonClient;
-use Omnifilm\LookupInterface;
-use Omnifilm\Model\Credit;
-use Omnifilm\Model\Identifiers;
-use Omnifilm\Model\Role;
-use Omnifilm\Model\Scheme;
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
-use Omnifilm\ProviderFactory;
-use Omnifilm\ProviderInterface;
+use Omnishow\Capabilities;
+use Omnishow\Config;
+use Omnishow\Exception\NotSupportedException;
+use Omnishow\Http\Data;
+use Omnishow\Http\JsonClient;
+use Omnishow\LookupInterface;
+use Omnishow\Model\Credit;
+use Omnishow\Model\Identifiers;
+use Omnishow\Model\Role;
+use Omnishow\Model\Scheme;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
+use Omnishow\ProviderFactory;
+use Omnishow\ProviderInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -78,9 +78,9 @@ final class ExampleFactory extends ProviderFactory
     protected function populate(Config $c): void
     {
         $c->defaults([
-            'omnifilm.factory_name' => 'example',
-            'omnifilm.factory_title' => 'Example Films',
-            'omnifilm.required_options' => ['api_key'],
+            'omnishow.factory_name' => 'example',
+            'omnishow.factory_title' => 'Example Films',
+            'omnishow.required_options' => ['api_key'],
             'api' => 'https://api.example-films.test/v1',
         ]);
     }
@@ -171,7 +171,7 @@ The unknown film is `null`: `RecordedHttpClient` answers 404 for what no route m
 ## Its BareTest
 
 ```php
-use Omnifilm\Testing\BareTestCase;
+use Omnishow\Testing\BareTestCase;
 
 final class BareTest extends BareTestCase
 {

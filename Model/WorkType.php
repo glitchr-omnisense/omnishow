@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnifilm\Model;
+namespace Omnishow\Model;
 
 /** What a work is: a film, a series, one episode of a series. */
 enum WorkType: string

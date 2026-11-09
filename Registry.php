@@ -1,11 +1,11 @@
 <?php
 
-namespace Omnifilm;
+namespace Omnishow;
 
-use Omnifilm\Exception\InvalidConfigException;
-use Omnifilm\Exception\NotSupportedException;
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkRef;
+use Omnishow\Exception\InvalidConfigException;
+use Omnishow\Exception\NotSupportedException;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkRef;
 
 /**
  * The application's providers by name, each built once from its factory and

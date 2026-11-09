@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnifilm\Model;
+namespace Omnishow\Model;
 
 /**
  * The record of a work as one provider knows it: its titles, dates, people,

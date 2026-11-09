@@ -1,21 +1,21 @@
 <?php
 
-namespace Omnifilm\Tests;
+namespace Omnishow\Tests;
 
-use Omnifilm\Capabilities;
-use Omnifilm\Config;
-use Omnifilm\Exception\InvalidConfigException;
-use Omnifilm\Exception\NotSupportedException;
-use Omnifilm\Model\Identifiers;
-use Omnifilm\Model\Query;
-use Omnifilm\Model\Scheme;
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
-use Omnifilm\ProviderFactory;
-use Omnifilm\ProviderInterface;
-use Omnifilm\Registry;
-use Omnifilm\Testing\FixedProviderFactory;
+use Omnishow\Capabilities;
+use Omnishow\Config;
+use Omnishow\Exception\InvalidConfigException;
+use Omnishow\Exception\NotSupportedException;
+use Omnishow\Model\Identifiers;
+use Omnishow\Model\Query;
+use Omnishow\Model\Scheme;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
+use Omnishow\ProviderFactory;
+use Omnishow\ProviderInterface;
+use Omnishow\Registry;
+use Omnishow\Testing\FixedProviderFactory;
 use PHPUnit\Framework\TestCase;
 
 final class RegistryTest extends TestCase
@@ -80,7 +80,7 @@ final class RegistryTest extends TestCase
         return new class extends ProviderFactory {
             protected function populate(Config $c): void
             {
-                $c->defaults(['omnifilm.factory_name' => 'bare', 'omnifilm.required_options' => ['token']]);
+                $c->defaults(['omnishow.factory_name' => 'bare', 'omnishow.required_options' => ['token']]);
             }
 
             protected function build(Config $c): ProviderInterface

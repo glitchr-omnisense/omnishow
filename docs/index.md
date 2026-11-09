@@ -1,10 +1,10 @@
-# omnisense/omnifilm
+# omnisense/omnishow
 
-Omnifilm is one PHP contract for the record of a film, a series or an episode, whoever keeps it:
+Omnishow is one PHP contract for the record of a film, a series or an episode, whoever keeps it:
 titles, dates, runtime, overview, genres, cast and crew, pictures, ratings, identifiers across the
 registers that know the work (IMDb, TMDB, TheTVDB, Trakt, Wikidata), a season's episodes and where
 to watch. An application asks every source the same questions and gets the same `Work` back; each
-source is a package of its own (`omnifilm/tmdb`, `omnifilm/wikidata`...) that turns the questions
+source is a package of its own (`omnishow/tmdb`, `omnishow/wikidata`...) that turns the questions
 into the source's API calls.
 
 ```php
@@ -23,8 +23,8 @@ work by, what its terms ask to be shown beside its records - and an identifier i
 is refused before any call. The core needs no framework: it requires
 `symfony/http-client-contracts` and nothing else.
 
-Published as `omnisense/omnifilm` (it `replace`s the former name `omniscient/omnifilm`). The
-namespace is `Omnifilm\`; providers keep the `omnifilm/` vendor and the `Omnifilm\<Provider>\`
+Published as `omnisense/omnishow`; it continues `omnisense/omnifilm`, merged into it on 2026-11-09. The
+namespace is `Omnishow\`; providers keep the `omnishow/` vendor and the `Omnishow\<Provider>\`
 namespace.
 
 ## When to use it
@@ -47,15 +47,15 @@ registers its `work()` resolves for a film, a series and an episode.
 
 | Package | Factory name | Search | Lookup by | Episodes | Where to watch | Credentials |
 |---|---|---|---|---|---|---|
-| [`omnifilm/tmdb`](https://github.com/glitchr-omnisense/omnifilm-tmdb) | `tmdb` | films, series | film: tmdb, imdb, wikidata; series: tmdb, imdb, tvdb, wikidata; episode: imdb, tvdb | yes | yes | a read access token or an API key |
-| [`omnifilm/omdb`](https://github.com/glitchr-omnisense/omnifilm-omdb) | `omdb` | films, series | imdb (all three types) | IMDb series only | - | an API key |
-| [`omnifilm/tvdb`](https://github.com/glitchr-omnisense/omnifilm-tvdb) | `tvdb` | films, series | film and series: tvdb, imdb, tmdb; episode: tvdb, imdb | yes | - | a project key (+ a subscriber's PIN) |
-| [`omnifilm/trakt`](https://github.com/glitchr-omnisense/omnifilm-trakt) | `trakt` | films, series | film: trakt, imdb, tmdb; series and episode: trakt, imdb, tmdb, tvdb | yes | - | a client id and a User-Agent |
-| [`omnifilm/wikidata`](https://github.com/glitchr-omnisense/omnifilm-wikidata) | `wikidata` | films, series | film and series: wikidata, imdb, tmdb, tvdb; episode: wikidata, imdb, tvdb | - | - | none (a User-Agent naming the application) |
+| [`omnishow/tmdb`](https://github.com/glitchr-omnisense/omnishow-tmdb) | `tmdb` | films, series | film: tmdb, imdb, wikidata; series: tmdb, imdb, tvdb, wikidata; episode: imdb, tvdb | yes | yes | a read access token or an API key |
+| [`omnishow/omdb`](https://github.com/glitchr-omnisense/omnishow-omdb) | `omdb` | films, series | imdb (all three types) | IMDb series only | - | an API key |
+| [`omnishow/tvdb`](https://github.com/glitchr-omnisense/omnishow-tvdb) | `tvdb` | films, series | film and series: tvdb, imdb, tmdb; episode: tvdb, imdb | yes | - | a project key (+ a subscriber's PIN) |
+| [`omnishow/trakt`](https://github.com/glitchr-omnisense/omnishow-trakt) | `trakt` | films, series | film: trakt, imdb, tmdb; series and episode: trakt, imdb, tmdb, tvdb | yes | - | a client id and a User-Agent |
+| [`omnishow/wikidata`](https://github.com/glitchr-omnisense/omnishow-wikidata) | `wikidata` | films, series | film and series: wikidata, imdb, tmdb, tvdb; episode: wikidata, imdb, tvdb | - | - | none (a User-Agent naming the application) |
 
 Pictures: TMDB (posters, backdrops, stills, services' logos), TheTVDB (posters, stills), OMDb
 (posters), Wikidata (Wikimedia Commons files); Trakt serves none. Ratings: TMDB, OMDb (IMDb, Rotten
-Tomatoes, Metacritic), Trakt. The core's test provider, `Omnifilm\Testing\FixedProvider`, answers
+Tomatoes, Metacritic), Trakt. The core's test provider, `Omnishow\Testing\FixedProvider`, answers
 all four contracts ([Testing](testing.md)). Each provider's manual lists its options, the calls it
 makes and its terms.
 

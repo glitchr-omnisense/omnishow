@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Omnifilm in plain PHP: no bundle, no container, no framework. A registry
+ * Omnishow in plain PHP: no bundle, no container, no framework. A registry
  * of one provider answering from works it holds; a search, a work found by
  * its IMDb number, a season's episodes, where to watch; then a provider's
  * JSON call answered with no network (a record, a 404, an error whose
@@ -10,24 +10,24 @@
  * PHP loaded, as JSON.
  */
 
-use Omnifilm\Exception\ProviderException;
-use Omnifilm\Http\JsonClient;
-use Omnifilm\Model\Credit;
-use Omnifilm\Model\Identifiers;
-use Omnifilm\Model\Image;
-use Omnifilm\Model\ImageKind;
-use Omnifilm\Model\Offer;
-use Omnifilm\Model\OfferKind;
-use Omnifilm\Model\Query;
-use Omnifilm\Model\Role;
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
-use Omnifilm\Registry;
-use Omnifilm\Testing\FixedProviderFactory;
-use Omnifilm\Testing\RecordedHttpClient;
+use Omnishow\Exception\ProviderException;
+use Omnishow\Http\JsonClient;
+use Omnishow\Model\Credit;
+use Omnishow\Model\Identifiers;
+use Omnishow\Model\Image;
+use Omnishow\Model\ImageKind;
+use Omnishow\Model\Offer;
+use Omnishow\Model\OfferKind;
+use Omnishow\Model\Query;
+use Omnishow\Model\Role;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
+use Omnishow\Registry;
+use Omnishow\Testing\FixedProviderFactory;
+use Omnishow\Testing\RecordedHttpClient;
 
-require getenv('OMNIFILM_AUTOLOAD') ?: '/harness/vendor/autoload.php';
+require getenv('OMNISHOW_AUTOLOAD') ?: '/harness/vendor/autoload.php';
 
 $peaks = Identifiers::of(['imdb' => 'tt0098936', 'tvdb' => 70533]);
 $works = [
@@ -52,7 +52,7 @@ $http = RecordedHttpClient::routes([
     '~^GET https://api\.example\.org/works/1~' => [200, '{"title": "Stalker", "release": {"date": "1979-05-25"}, "cast": [{"name": "Anatoly Solonitsyn"}, "not an object"]}'],
     '~^GET https://api\.example\.org/works/3~' => [500, '<h1>Internal error</h1>'],
 ]);
-$json = new JsonClient($http, 'Example', ['User-Agent' => 'omnifilm-bare/1.0']);
+$json = new JsonClient($http, 'Example', ['User-Agent' => 'omnishow-bare/1.0']);
 $data = $json->get('https://api.example.org/works/1', ['key' => 'not-a-real-key']);
 $report['json'] = [$data?->string('title'), $data?->date('release.date')?->format('Y'), $data?->strings('cast', 'name'), $http->header('User-Agent')];
 $report['json-404'] = $json->get('https://api.example.org/works/2');

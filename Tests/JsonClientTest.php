@@ -1,12 +1,12 @@
 <?php
 
-namespace Omnifilm\Tests;
+namespace Omnishow\Tests;
 
-use Omnifilm\Exception\ProviderException;
-use Omnifilm\Exception\UnreachableException;
-use Omnifilm\Http\Data;
-use Omnifilm\Http\JsonClient;
-use Omnifilm\Testing\RecordedHttpClient;
+use Omnishow\Exception\ProviderException;
+use Omnishow\Exception\UnreachableException;
+use Omnishow\Http\Data;
+use Omnishow\Http\JsonClient;
+use Omnishow\Testing\RecordedHttpClient;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -137,7 +137,7 @@ final class JsonClientTest extends TestCase
                         continue;
                     }
                     self::fail("no exception on $status");
-                } catch (\Omnifilm\Exception\OmnifilmException $e) {
+                } catch (\Omnishow\Exception\OmnishowException $e) {
                     self::assertNotEmpty($e->getTrace());
                     foreach (['error-key-1234567', 'error-token-1234567'] as $secret) {
                         self::assertFalse(str_contains($e->getMessage(), $secret), $e->getMessage());

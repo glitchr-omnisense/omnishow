@@ -1,11 +1,11 @@
 <?php
 
-namespace Omnifilm\Exception;
+namespace Omnishow\Exception;
 
-use Omnifilm\Model\WorkRef;
+use Omnishow\Model\WorkRef;
 
 /** A provider asked for what it does not do: episodes of OMDb's search, a work by a register it does not know. */
-final class NotSupportedException extends \LogicException implements OmnifilmException
+final class NotSupportedException extends \LogicException implements OmnishowException
 {
     public static function capability(object $provider, string $name, string $capability): self
     {

@@ -1,4 +1,4 @@
-# omnisense/omnifilm
+# omnisense/omnishow
 
 The record of a film, a series or an episode, under any PHP host, whoever keeps it: titles, dates,
 cast and crew, pictures, identifiers across registers (IMDb, TMDB, TheTVDB, Trakt, Wikidata), a
@@ -6,10 +6,10 @@ season's episodes and where to watch. One set of models and contracts; each sour
 its own.
 
 ```php
-use Omnifilm\Model\{Query, WorkRef, WorkType};
-use Omnifilm\Registry;
-use Omnifilm\Tmdb\TmdbFactory;
-use Omnifilm\Wikidata\WikidataFactory;
+use Omnishow\Model\{Query, WorkRef, WorkType};
+use Omnishow\Registry;
+use Omnishow\Tmdb\TmdbFactory;
+use Omnishow\Wikidata\WikidataFactory;
 use Symfony\Component\HttpClient\HttpClient;
 
 $http = HttpClient::create();
@@ -20,7 +20,7 @@ $films = new Registry([new TmdbFactory($http), new WikidataFactory($http)], [
 
 $found = $films->search('open')->search(new Query('Stalker', WorkType::Movie, 1979));
 $stalker = $films->lookup('open')->work(WorkRef::wikidata('Q200437'), 'fr');
-$sameAtTmdb = $films->work($stalker->ref(\Omnifilm\Model\Scheme::Imdb), 'fr', 'tmdb');
+$sameAtTmdb = $films->work($stalker->ref(\Omnishow\Model\Scheme::Imdb), 'fr', 'tmdb');
 $episodes = $films->episodes('tmdb')->episodes(WorkRef::tmdb(1920, WorkType::Series), 1);
 $where = $films->availability('tmdb')->offers(WorkRef::tmdb(603), 'FR');
 ```
@@ -30,7 +30,7 @@ Plain PHP: no container, no framework. The core requires only `symfony/http-clie
 
 ## The shape
 
-- **Models** (`Omnifilm\Model`): `Work` (type, titles, year and date, runtime, overview, genres,
+- **Models** (`Omnishow\Model`): `Work` (type, titles, year and date, runtime, overview, genres,
   countries, languages, `Identifiers`, `Image`s, `Credit`s, `Rating`s, page; an episode's series,
   season and number), `WorkRef` (a type, a `Scheme`, an identifier), `Query`, `Offer`. What a
   provider does not give stays empty: nothing is guessed. See [docs/models.md](docs/models.md).
@@ -51,11 +51,11 @@ Plain PHP: no container, no framework. The core requires only `symfony/http-clie
 
 | Package | Search | Lookup by | Episodes | Where to watch | Key |
 |---|---|---|---|---|---|
-| [omnifilm/tmdb](https://github.com/glitchr-omnisense/omnifilm-tmdb) (over php-tmdb/api) | yes | tmdb, imdb, tvdb, wikidata | yes | yes (JustWatch's data) | token or API key |
-| [omnifilm/omdb](https://github.com/glitchr-omnisense/omnifilm-omdb) | yes | imdb | yes | - | API key |
-| [omnifilm/tvdb](https://github.com/glitchr-omnisense/omnifilm-tvdb) | yes | tvdb, imdb, tmdb | yes | - | project key (+ PIN) |
-| [omnifilm/trakt](https://github.com/glitchr-omnisense/omnifilm-trakt) | yes | trakt, imdb, tmdb, tvdb | yes | - | client id |
-| [omnifilm/wikidata](https://github.com/glitchr-omnisense/omnifilm-wikidata) | yes | wikidata, imdb, tmdb, tvdb | - | - | none |
+| [omnishow/tmdb](https://github.com/glitchr-omnisense/omnishow-tmdb) (over php-tmdb/api) | yes | tmdb, imdb, tvdb, wikidata | yes | yes (JustWatch's data) | token or API key |
+| [omnishow/omdb](https://github.com/glitchr-omnisense/omnishow-omdb) | yes | imdb | yes | - | API key |
+| [omnishow/tvdb](https://github.com/glitchr-omnisense/omnishow-tvdb) | yes | tvdb, imdb, tmdb | yes | - | project key (+ PIN) |
+| [omnishow/trakt](https://github.com/glitchr-omnisense/omnishow-trakt) | yes | trakt, imdb, tmdb, tvdb | yes | - | client id |
+| [omnishow/wikidata](https://github.com/glitchr-omnisense/omnishow-wikidata) | yes | wikidata, imdb, tmdb, tvdb | - | - | none |
 
 The Symfony and Laravel wiring will live in omnibridge when a site needs it.
 
@@ -83,14 +83,14 @@ The manual, in `docs/`:
   provider's tests and `BareTest`; PHPStan at its highest level on every package, the baseline
   empty.
 - Verified live: Wikidata (no key) - a search, a film by its IMDb number, a series by its TMDB
-  number (`docker compose run --rm omnifilm live`).
+  number (`docker compose run --rm omnishow live`).
 - Not verified live: TMDB, OMDb, TheTVDB, Trakt - no account was used. Their tests run on answers
   shaped after each API's reference and written by hand; the first site that has a key runs them
   once against the real service.
 
 ## Responsibility
 
-`omnisense/omnifilm` and its `omnifilm/*` providers are independent, unofficial clients: none is
+`omnisense/omnishow` and its `omnishow/*` providers are independent, unofficial clients: none is
 affiliated with, endorsed by or sponsored by the services it reaches. Each service keeps its own
 terms (accounts and keys, rate limits, commercial or non-commercial use, caching, attribution),
 named with a link in the README of each provider. The MIT licence covers this code only and grants

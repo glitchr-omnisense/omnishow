@@ -1,20 +1,20 @@
 <?php
 
-namespace Omnifilm\Testing;
+namespace Omnishow\Testing;
 
-use Omnifilm\AvailabilityInterface;
-use Omnifilm\Capabilities;
-use Omnifilm\EpisodesInterface;
-use Omnifilm\Exception\NotSupportedException;
-use Omnifilm\LookupInterface;
-use Omnifilm\Model\Offer;
-use Omnifilm\Model\Query;
-use Omnifilm\Model\Scheme;
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
-use Omnifilm\ProviderInterface;
-use Omnifilm\SearchInterface;
+use Omnishow\AvailabilityInterface;
+use Omnishow\Capabilities;
+use Omnishow\EpisodesInterface;
+use Omnishow\Exception\NotSupportedException;
+use Omnishow\LookupInterface;
+use Omnishow\Model\Offer;
+use Omnishow\Model\Query;
+use Omnishow\Model\Scheme;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
+use Omnishow\ProviderInterface;
+use Omnishow\SearchInterface;
 
 /**
  * A provider that answers from the works it was given, with no network: an

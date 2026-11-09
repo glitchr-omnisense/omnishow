@@ -26,9 +26,9 @@ this order. Options are checked when the provider is first asked for: a required
 Every factory takes an optional HTTP client in its constructor - `new TmdbFactory($http)` - and
 makes its own (`HttpClient::create(['timeout' => 20])`) when given none.
 
-## omnifilm/tmdb
+## omnishow/tmdb
 
-Factory `Omnifilm\Tmdb\TmdbFactory`, name `tmdb`.
+Factory `Omnishow\Tmdb\TmdbFactory`, name `tmdb`.
 
 | Option | Type | Default | Required | |
 |---|---|---|---|---|
@@ -45,18 +45,18 @@ Factory `Omnifilm\Tmdb\TmdbFactory`, name `tmdb`.
 With neither `token` nor `api_key`: `InvalidConfigException` (`The "tmdb" provider needs: token
 (the API Read Access Token) or api_key.`).
 
-## omnifilm/omdb
+## omnishow/omdb
 
-Factory `Omnifilm\Omdb\OmdbFactory`, name `omdb`.
+Factory `Omnishow\Omdb\OmdbFactory`, name `omdb`.
 
 | Option | Type | Default | Required | |
 |---|---|---|---|---|
 | `api_key` | string | - | yes | the OMDb key, sent in the query string (`apikey=`) |
 | `api` | string | `https://www.omdbapi.com/` | no | the API's address |
 
-## omnifilm/tvdb
+## omnishow/tvdb
 
-Factory `Omnifilm\Tvdb\TvdbFactory`, name `tvdb`.
+Factory `Omnishow\Tvdb\TvdbFactory`, name `tvdb`.
 
 | Option | Type | Default | Required | |
 |---|---|---|---|---|
@@ -65,9 +65,9 @@ Factory `Omnifilm\Tvdb\TvdbFactory`, name `tvdb`.
 | `language` | string | `null` | no | `fr` or `fra` (TheTVDB's codes are three letters; sixteen two-letter codes are mapped, `fr-FR` read as `fr`); `null`: TheTVDB's own texts |
 | `api` | string | `https://api4.thetvdb.com/v4` | no | the API's base URL |
 
-## omnifilm/trakt
+## omnishow/trakt
 
-Factory `Omnifilm\Trakt\TraktFactory`, name `trakt`.
+Factory `Omnishow\Trakt\TraktFactory`, name `trakt`.
 
 | Option | Type | Default | Required | |
 |---|---|---|---|---|
@@ -76,9 +76,9 @@ Factory `Omnifilm\Trakt\TraktFactory`, name `trakt`.
 | `api` | string | `https://api.trakt.tv` | no | the API's base URL |
 | `cast` | int | `20` | no | the cast members kept |
 
-## omnifilm/wikidata
+## omnishow/wikidata
 
-Factory `Omnifilm\Wikidata\WikidataFactory`, name `wikidata`.
+Factory `Omnishow\Wikidata\WikidataFactory`, name `wikidata`.
 
 | Option | Type | Default | Required | |
 |---|---|---|---|---|
@@ -96,5 +96,5 @@ that call.
 
 ## The fixed provider (testing)
 
-`Omnifilm\Testing\FixedProviderFactory`, name `fixed`, takes its records and offers in its
+`Omnishow\Testing\FixedProviderFactory`, name `fixed`, takes its records and offers in its
 constructor (`new FixedProviderFactory($works, $offers)`) and no option.

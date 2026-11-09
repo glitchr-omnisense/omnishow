@@ -1,9 +1,9 @@
 <?php
 
-namespace Omnifilm;
+namespace Omnishow;
 
-use Omnifilm\Model\Query;
-use Omnifilm\Model\Work;
+use Omnishow\Model\Query;
+use Omnishow\Model\Work;
 
 interface SearchInterface
 {

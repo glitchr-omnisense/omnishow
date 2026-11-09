@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnifilm\Model;
+namespace Omnishow\Model;
 
 /**
  * Where a work can be watched in one country: the service, how (stream,

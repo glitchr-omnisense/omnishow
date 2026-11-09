@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnifilm\Model;
+namespace Omnishow\Model;
 
 /** One person's part in a work: who, as what, and the character played. */
 final readonly class Credit

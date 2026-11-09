@@ -5,7 +5,7 @@ order: 50
 
 # Errors
 
-Every exception Omnifilm throws implements `Omnifilm\Exception\OmnifilmException` (a `\Throwable`):
+Every exception Omnishow throws implements `Omnishow\Exception\OmnishowException` (a `\Throwable`):
 
 | Exception | Extends | When |
 |---|---|---|
@@ -40,7 +40,7 @@ query episode      InvalidArgumentException: An episode is not searched for: ask
 query limit        InvalidArgumentException: A search answers 1 to 50 works.
 ref empty          InvalidArgumentException: A work is named by a non-empty identifier.
 ids bad            InvalidArgumentException: "IMDb" is not a register name.
-registry avail     NotSupportedException: The "o" provider (Omnifilm\Omdb\OmdbProvider) does not say where to watch.
+registry avail     NotSupportedException: The "o" provider (Omnishow\Omdb\OmdbProvider) does not say where to watch.
 registry none      InvalidConfigException: No "x" film provider; configured: o.
 ```
 
@@ -65,7 +65,7 @@ that is not JSON): every exception `JsonClient::request()` throws leaves its tra
 
 | Where | Catch |
 |---|---|
-| a page showing a record | `OmnifilmException`: show what the application kept, or the title alone; log the message privately |
+| a page showing a record | `OmnishowException`: show what the application kept, or the title alone; log the message privately |
 | a search box | `InvalidArgumentException` for an empty query; `ProviderException` for a provider that refuses (OMDb's daily limit) |
 | a chain of providers (`Registry::work()`) | an exception of one provider ends the chain: catch around each provider's `work()` to go on to the next |
 | a batch import | `UnreachableException`, and `ProviderException` for a 429 or 5xx or Wikidata's `maxlag`: wait and retry; a 401: the key, to fix |

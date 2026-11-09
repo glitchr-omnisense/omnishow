@@ -19,9 +19,9 @@
   stood in the message.
 
 ### Added
-- `Omnifilm\Http\Redaction`: a request's secrets (`secrets()`), a text without them (`text()`),
+- `Omnishow\Http\Redaction`: a request's secrets (`secrets()`), a text without them (`text()`),
   a failure's copy to wrap in its place (`copy()`), a trace without arguments
   (`withoutArguments()`).
 - `ext-mbstring` in `composer.json`'s requirements: `ProviderException` shortens error bodies with
   `mb_substr()`, which a PHP built without mbstring did not have (no test: a requirement).
-- `Omnifilm\Http\JsonClient::reason()`: an HTTP client's message without the addresses it quotes.
+- `Omnishow\Http\JsonClient::reason()`: an HTTP client's message without the addresses it quotes.

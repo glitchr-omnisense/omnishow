@@ -5,22 +5,22 @@ order: 60
 
 # Testing
 
-Testing an application that shows records with Omnifilm. Writing a provider and its tests:
+Testing an application that shows records with Omnishow. Writing a provider and its tests:
 [Writing a provider](providers.md).
 
 ## The fixed provider as a fake
 
-`Omnifilm\Testing\FixedProvider` answers all four contracts from records given in advance, with no
+`Omnishow\Testing\FixedProvider` answers all four contracts from records given in advance, with no
 network; `FixedProviderFactory` registers it under the name `fixed`:
 
 ```php
-use Omnifilm\Model\Identifiers;
-use Omnifilm\Model\Offer;
-use Omnifilm\Model\OfferKind;
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkType;
-use Omnifilm\Registry;
-use Omnifilm\Testing\FixedProviderFactory;
+use Omnishow\Model\Identifiers;
+use Omnishow\Model\Offer;
+use Omnishow\Model\OfferKind;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkType;
+use Omnishow\Registry;
+use Omnishow\Testing\FixedProviderFactory;
 
 $films = new Registry([new FixedProviderFactory(
     works: [new Work(WorkType::Movie, 'Stalker', Identifiers::of(['imdb' => 'tt0079944']), 'fixed', year: 1979)],
@@ -45,7 +45,7 @@ Its `getName()` is `fixed`, and the records keep the `source` they were built wi
 
 ## A provider on recorded answers
 
-`Omnifilm\Testing\RecordedHttpClient` answers a provider's calls with no network:
+`Omnishow\Testing\RecordedHttpClient` answers a provider's calls with no network:
 
 | Member | |
 |---|---|
@@ -56,14 +56,14 @@ Its `getName()` is `fixed`, and the records keep the `source` they were built wi
 | `stream()` | throws `\LogicException`: it does not stream |
 
 ```php
-use Omnifilm\Model\Identifiers;
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
-use Omnifilm\Omdb\OmdbFactory;
-use Omnifilm\Registry;
-use Omnifilm\Testing\FixedProviderFactory;
-use Omnifilm\Testing\RecordedHttpClient;
+use Omnishow\Model\Identifiers;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
+use Omnishow\Omdb\OmdbFactory;
+use Omnishow\Registry;
+use Omnishow\Testing\FixedProviderFactory;
+use Omnishow\Testing\RecordedHttpClient;
 use PHPUnit\Framework\TestCase;
 
 final class FilmSheetTest extends TestCase
@@ -102,14 +102,14 @@ OK (2 tests, 4 assertions)
 
 (run on 2026-10-26 in the [harness](harness.md), PHPUnit 11.5, PHP 8.4)
 
-**omnifilm/tmdb needs Symfony's `MockHttpClient` instead.** php-tmdb reads the answer through
+**omnishow/tmdb needs Symfony's `MockHttpClient` instead.** php-tmdb reads the answer through
 Symfony's `Psr18Client`, which streams the body; `RecordedHttpClient` does not stream, and the call
 fails (`Unable to read stream contents: RecordedHttpClient does not stream.`, seen in the harness on
 2026-10-26). The TMDB package's own tests use `MockHttpClient`:
 
 ```php
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Tmdb\TmdbFactory;
+use Omnishow\Model\WorkRef;
+use Omnishow\Tmdb\TmdbFactory;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
@@ -125,9 +125,9 @@ becomes an `UnreachableException`.
 
 ## The bare test case
 
-`Omnifilm\Testing\BareTestCase` (an abstract PHPUnit `TestCase`) is the check every package of the
+`Omnishow\Testing\BareTestCase` (an abstract PHPUnit `TestCase`) is the check every package of the
 family runs in its `BareTest`: each of its classes loaded in a PHP process of its own, with nothing
-from outside but `omnisense/omnifilm` and what the package requires - no framework, no HTTP client
+from outside but `omnisense/omnishow` and what the package requires - no framework, no HTTP client
 class, no application.
 
 | Member | |

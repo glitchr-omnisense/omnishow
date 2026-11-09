@@ -7,7 +7,7 @@ order: 20
 
 ## Providers and contracts
 
-`Omnifilm\ProviderInterface` is one source of works' records, configured. What it can be asked
+`Omnishow\ProviderInterface` is one source of works' records, configured. What it can be asked
 comes from the contracts it implements, one per capability:
 
 | Interface | Method | Returns |
@@ -31,7 +31,7 @@ translate: they ignore it.
 
 ## Capabilities
 
-`Omnifilm\Capabilities` (a readonly value):
+`Omnishow\Capabilities` (a readonly value):
 
 | Property | Type | Default | |
 |---|---|---|---|
@@ -66,19 +66,19 @@ The attribution each provider declares:
 
 ## Factory and Config
 
-`Omnifilm\ProviderFactoryInterface` builds a provider from options: `getName(): string` (the name
+`Omnishow\ProviderFactoryInterface` builds a provider from options: `getName(): string` (the name
 providers are configured with) and `create(array $options = []): ProviderInterface`. Every
-provider's factory extends `Omnifilm\ProviderFactory`:
+provider's factory extends `Omnishow\ProviderFactory`:
 
 1. `createConfig($options)` - a `Config` (an `ArrayObject`) holding the options given, then the
    factory's `populate()` fills each key the options did not set with its default;
-2. the keys listed under `omnifilm.required_options` are checked: one missing, `''` or `[]` is an
+2. the keys listed under `omnishow.required_options` are checked: one missing, `''` or `[]` is an
    `InvalidConfigException` listing every missing key (`The "trakt" provider needs: client_id,
    user_agent.`);
 3. the factory's `build()` returns the provider, after any check of its own (TMDB's token or key,
    Wikidata's User-Agent).
 
-Reserved keys: `omnifilm.factory_name`, `omnifilm.factory_title`, `omnifilm.required_options`.
+Reserved keys: `omnishow.factory_name`, `omnishow.factory_title`, `omnishow.required_options`.
 `Config` reads options with types: `defaults()`, `validateNotEmpty()`, `get($key, $default)`,
 `string($key)` (`null` when empty), `int($key, $default = 0)`, `float()`, `bool()` (`"1"`,
 `"true"`, `"yes"`, `"on"` as `true`, an environment variable's spelling).
@@ -89,7 +89,7 @@ own with a 20-second timeout. Building calls nothing: the first call is the firs
 
 ## Registry
 
-`Omnifilm\Registry` holds the application's providers by name:
+`Omnishow\Registry` holds the application's providers by name:
 
 ```php
 $films = new Registry(
@@ -104,7 +104,7 @@ $films = new Registry(
 | Method | |
 |---|---|
 | `get(string $name): ProviderInterface` | the provider, built on first use from its factory and options, then kept |
-| `search($name)`, `lookup($name)`, `episodes($name)`, `availability($name)` | the same provider as that contract, or `NotSupportedException` (`The "o" provider (Omnifilm\Omdb\OmdbProvider) does not say where to watch.`) |
+| `search($name)`, `lookup($name)`, `episodes($name)`, `availability($name)` | the same provider as that contract, or `NotSupportedException` (`The "o" provider (Omnishow\Omdb\OmdbProvider) does not say where to watch.`) |
 | `work(WorkRef $ref, ?string $language = null, string ...$names): ?Work` | the record from the first provider - in the configuration's order, or in the order of `$names` - that implements `LookupInterface`, resolves the ref (`Capabilities::resolves()`) and finds it; `null` when none does |
 | `has(string $name): bool` | whether a provider of that name is configured |
 | `options(string $name): array` | the options it is configured with |
@@ -121,7 +121,7 @@ A name not configured, or configured with a factory not installed, is an `Invali
 
 ## WorkRef and Scheme
 
-`Omnifilm\Model\WorkRef` (readonly, `\Stringable`) names a work by one identifier:
+`Omnishow\Model\WorkRef` (readonly, `\Stringable`) names a work by one identifier:
 
 | Member | |
 |---|---|
@@ -133,7 +133,7 @@ A name not configured, or configured with a factory not installed, is an `Invali
 | `WorkRef::wikidata(string $id, WorkType $type = Movie)` | `Q200437` |
 | `(string) $ref` | `movie:imdb:tt0079944` |
 
-`Omnifilm\Model\Scheme`, the registers, a string-backed enum:
+`Omnishow\Model\Scheme`, the registers, a string-backed enum:
 
 | Case | Value | Identifier |
 |---|---|---|
@@ -143,13 +143,13 @@ A name not configured, or configured with a factory not installed, is an `Invali
 | `Trakt` | `trakt` | a number |
 | `Wikidata` | `wikidata` | `Q172241` |
 
-`Omnifilm\Model\WorkType`: `Movie` (`movie`), `Series` (`series`), `Episode` (`episode`). The type
+`Omnishow\Model\WorkType`: `Movie` (`movie`), `Series` (`series`), `Episode` (`episode`). The type
 matters: a lookup whose record is of another type is not a match (`null`), and the same TMDB number
 is a film or a series depending on it.
 
 ## Identifiers
 
-`Omnifilm\Model\Identifiers` (readonly) holds one work's (or one person's) identifiers, keyed by
+`Omnishow\Model\Identifiers` (readonly) holds one work's (or one person's) identifiers, keyed by
 scheme value - what lets a record read from one provider be completed by another.
 
 | Member | |
@@ -163,7 +163,7 @@ scheme value - what lets a record read from one provider be completed by another
 
 ## Work
 
-`Omnifilm\Model\Work` (readonly) is the record of a work as one provider knows it. What the provider
+`Omnishow\Model\Work` (readonly) is the record of a work as one provider knows it. What the provider
 does not give is empty or `null`, never guessed: a search answer is usually shorter than a lookup.
 
 | Property | Type | |
@@ -197,7 +197,7 @@ does not give is empty or `null`, never guessed: a search answer is usually shor
 
 ## Credit, Role
 
-`Omnifilm\Model\Credit` (readonly): one person's part in a work.
+`Omnishow\Model\Credit` (readonly): one person's part in a work.
 
 | Property | Type | |
 |---|---|---|
@@ -208,36 +208,36 @@ does not give is empty or `null`, never guessed: a search answer is usually shor
 | `identifiers` | `Identifiers` | the person's: TMDB, TheTVDB, Trakt, Wikidata numbers as the provider gives them |
 | `job` | `?string` | the provider's own title for the part: `Director`, `Screenplay`, `creator`... |
 
-`Omnifilm\Model\Role`: `Director`, `Writer`, `Cast`, `Producer`, `Composer`, `Crew` (anyone else;
+`Omnishow\Model\Role`: `Director`, `Writer`, `Cast`, `Producer`, `Composer`, `Crew` (anyone else;
 no provider maps to it yet - each keeps only the roles it can tell).
 
 ## Image, ImageKind
 
-`Omnifilm\Model\Image` (readonly): `kind` (`ImageKind`), `url` (where the provider serves it),
+`Omnishow\Model\Image` (readonly): `kind` (`ImageKind`), `url` (where the provider serves it),
 `width`, `height`, `language` (each `?`, when known). The picture stays where the provider serves
 it, under its terms and the rights holder's: an application shows it, it does not copy it.
 
-`Omnifilm\Model\ImageKind`: `Poster`, `Backdrop`, `Still` (a frame of an episode), `Logo`, `Other`.
+`Omnishow\Model\ImageKind`: `Poster`, `Backdrop`, `Still` (a frame of an episode), `Logo`, `Other`.
 
 ## Rating
 
-`Omnifilm\Model\Rating` (readonly): `source` (`imdb`, `rottentomatoes`, `metacritic`, `tmdb`,
+`Omnishow\Model\Rating` (readonly): `source` (`imdb`, `rottentomatoes`, `metacritic`, `tmdb`,
 `trakt`), `value` (float), `scale` (float, 10 by default; 100 for a percentage or Metacritic),
 `votes` (`?int`). `8.7` out of `10` from 2.9 million IMDb votes is `new Rating('imdb', 8.7, 10.0,
 2900000)`.
 
 ## Offer, OfferKind
 
-`Omnifilm\Model\Offer` (readonly): where a work can be watched in one country - `kind`
+`Omnishow\Model\Offer` (readonly): where a work can be watched in one country - `kind`
 (`OfferKind`), `service` (`Netflix`, `Canal+`...), `country` (alpha-2, upper case), `url` (the page
 that says so; for TMDB, its watch page for that country), `logo` (the service's logo).
 
-`Omnifilm\Model\OfferKind`: `Stream` (in a subscription), `Free`, `Ads` (free, with advertising),
+`Omnishow\Model\OfferKind`: `Stream` (in a subscription), `Free`, `Ads` (free, with advertising),
 `Rent`, `Buy`.
 
 ## Query
 
-`Omnifilm\Model\Query` (readonly): a search by title.
+`Omnishow\Model\Query` (readonly): a search by title.
 
 ```php
 new Query(string $text, ?WorkType $type = null, ?int $year = null, ?string $language = null, int $limit = 10);
@@ -253,7 +253,7 @@ new Query(string $text, ?WorkType $type = null, ?int $year = null, ?string $lang
 
 ## The HTTP layer
 
-Providers call their source through `Omnifilm\Http\JsonClient`:
+Providers call their source through `Omnishow\Http\JsonClient`:
 `new JsonClient(HttpClientInterface $http, string $provider, array $headers = [])` - the headers
 sent with every request (a User-Agent, a key) - then `get(string $url, array $query = [], array
 $headers = []): ?Data` (the query's `null` values dropped) or `request(string $method, string $url,
@@ -263,7 +263,7 @@ Service Unavailable`, the body's text after it, tags stripped, 300 characters at
 that is not JSON too (`The body is not JSON.`); an HTTP client's exception (a network error) is an
 `UnreachableException` ([Errors](errors.md)).
 
-`Omnifilm\Http\Data` reads a decoded answer by key without trusting its shape: `get()`, `has()`,
+`Omnishow\Http\Data` reads a decoded answer by key without trusting its shape: `get()`, `has()`,
 `string()` (a number as a string; `null` when empty), `int()`, `float()`, `bool()`, `date()`
 (`2011-04-17` or ISO 8601, read as a day in UTC; or a format given), `data()` (a nested object),
 `list()` (the objects of a list, what is not an object skipped), `items()`, `strings($key, $field)`

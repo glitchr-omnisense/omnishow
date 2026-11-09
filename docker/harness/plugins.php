@@ -1,13 +1,13 @@
 <?php
 
 /*
- * The omnifilm/* providers the harness installs beside the core: their tests'
+ * The omnishow/* providers the harness installs beside the core: their tests'
  * namespace, and what their tests need besides (require-dev).
  */
 return [
-    'tmdb' => ['Omnifilm\\Tmdb\\Tests\\'],
-    'omdb' => ['Omnifilm\\Omdb\\Tests\\'],
-    'tvdb' => ['Omnifilm\\Tvdb\\Tests\\'],
-    'trakt' => ['Omnifilm\\Trakt\\Tests\\'],
-    'wikidata' => ['Omnifilm\\Wikidata\\Tests\\'],
+    'tmdb' => ['Omnishow\\Tmdb\\Tests\\'],
+    'omdb' => ['Omnishow\\Omdb\\Tests\\'],
+    'tvdb' => ['Omnishow\\Tvdb\\Tests\\'],
+    'trakt' => ['Omnishow\\Trakt\\Tests\\'],
+    'wikidata' => ['Omnishow\\Wikidata\\Tests\\'],
 ];

@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnifilm\Model;
+namespace Omnishow\Model;
 
 enum OfferKind: string
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnifilm;
+namespace Omnishow;
 
 /**
  * One source of works' records, configured: TMDB, Wikidata... Its

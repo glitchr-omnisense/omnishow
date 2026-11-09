@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnifilm\Model;
+namespace Omnishow\Model;
 
 /** A score given somewhere: 8.7 out of 10 from 2.9 million IMDb votes. */
 final readonly class Rating

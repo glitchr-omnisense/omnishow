@@ -1,8 +1,8 @@
 <?php
 
-namespace Omnifilm\Exception;
+namespace Omnishow\Exception;
 
 /** The provider could not be reached: a network error, a timeout. */
-final class UnreachableException extends \RuntimeException implements OmnifilmException
+final class UnreachableException extends \RuntimeException implements OmnishowException
 {
 }

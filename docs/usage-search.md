@@ -10,8 +10,8 @@ Every provider answers it, for films and series; an episode is not searched for 
 refuses it): ask its series for its episodes ([Episodes](usage-episodes.md)).
 
 ```php
-use Omnifilm\Model\Query;
-use Omnifilm\Model\WorkType;
+use Omnishow\Model\Query;
+use Omnishow\Model\WorkType;
 
 $found = $films->search('open')->search(new Query('Stalker', WorkType::Movie, 1979, 'fr', limit: 5));
 
@@ -25,7 +25,7 @@ A search answer is a short record: each provider's search gives fewer fields tha
 ([Records and identifiers](usage-lookup.md)):
 
 ```php
-$record = $films->lookup('open')->work($found[0]->ref(\Omnifilm\Model\Scheme::Wikidata), 'fr');
+$record = $films->lookup('open')->work($found[0]->ref(\Omnishow\Model\Scheme::Wikidata), 'fr');
 ```
 
 ## What each provider does
@@ -52,6 +52,6 @@ animated, mini, web, anime series): an item that is none of them is not found.
   "Too many results."`: an empty search, `[]`.
 
 - The words are sent as typed: what matches is the provider's search engine's business (TMDB's,
-  OMDb's, TheTVDB's, Trakt's, Wikidata's CirrusSearch), not Omnifilm's.
+  OMDb's, TheTVDB's, Trakt's, Wikidata's CirrusSearch), not Omnishow's.
 - The `limit` caps what is returned, not what is asked: TMDB and OMDb are asked for their first
   page only, whatever the limit.

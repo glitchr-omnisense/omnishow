@@ -1,9 +1,9 @@
 <?php
 
-namespace Omnifilm\Exception;
+namespace Omnishow\Exception;
 
 /** The provider answered, and not with what was asked: an error status, a body that is not JSON. */
-final class ProviderException extends \RuntimeException implements OmnifilmException
+final class ProviderException extends \RuntimeException implements OmnishowException
 {
     public static function answered(string $provider, string $what, int|string $status, string $detail = ''): self
     {

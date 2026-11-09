@@ -1,9 +1,9 @@
 <?php
 
-namespace Omnifilm;
+namespace Omnishow;
 
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkRef;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkRef;
 
 interface EpisodesInterface
 {

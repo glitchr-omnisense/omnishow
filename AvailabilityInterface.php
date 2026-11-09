@@ -1,9 +1,9 @@
 <?php
 
-namespace Omnifilm;
+namespace Omnishow;
 
-use Omnifilm\Model\Offer;
-use Omnifilm\Model\WorkRef;
+use Omnishow\Model\Offer;
+use Omnishow\Model\WorkRef;
 
 interface AvailabilityInterface
 {

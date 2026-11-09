@@ -1,10 +1,10 @@
 <?php
 
-namespace Omnifilm;
+namespace Omnishow;
 
-use Omnifilm\Model\Scheme;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
+use Omnishow\Model\Scheme;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
 
 /**
  * What a provider is, said before it is asked anything: what it can do, the

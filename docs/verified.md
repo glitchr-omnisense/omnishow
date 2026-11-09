@@ -17,7 +17,7 @@ no error, the baselines empty.
   a missing option, an unknown provider or factory, `Registry::work()` asking the first provider
   that resolves the register; `Data` reading any shape; `JsonClient`'s answers, errors and
   unreachable providers.
-- In plain PHP (`Tests/BareTest.php`): records read by hand loading nothing but Omnifilm and what it
+- In plain PHP (`Tests/BareTest.php`): records read by hand loading nothing but Omnishow and what it
   requires.
 - Each provider: its calls and its reading of the answers, not found as `null`, a refusal as an
   exception, and a `BareTest`.
@@ -34,7 +34,7 @@ There is no conformance suite shared by the providers: each tests its own mappin
 
 ## What was run live
 
-- `docker compose run --rm omnifilm live` (`Omnifilm\Wikidata\Tests\LiveTest`), 2026-10-24:
+- `docker compose run --rm omnishow live` (`Omnishow\Wikidata\Tests\LiveTest`), 2026-10-24:
   Stalker found by a search narrowed to 1979, The Shawshank Redemption by its IMDb number (TMDB
   278, Frank Darabont), Game of Thrones by its TMDB series number (Q23572, tt0944947, TheTVDB
   121361, 2011).
@@ -58,7 +58,7 @@ None left: those the manuals found were fixed on 2026-10-29.
 
 ## Responsibility
 
-`omnisense/omnifilm` and its `omnifilm/*` providers are independent, unofficial clients: none is
+`omnisense/omnishow` and its `omnishow/*` providers are independent, unofficial clients: none is
 affiliated with, endorsed by or sponsored by the services it reaches. Each service keeps its own
 terms (accounts and keys, rate limits, commercial or non-commercial use, caching, attribution),
 named with a link in the README and the manual of each provider. The MIT licence covers this code

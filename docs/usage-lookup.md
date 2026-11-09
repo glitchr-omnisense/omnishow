@@ -10,9 +10,9 @@ by one of its identifiers. Every provider answers it, each for the registers lis
 `capabilities()->lookupBy`.
 
 ```php
-use Omnifilm\Model\ImageKind;
-use Omnifilm\Model\Role;
-use Omnifilm\Model\WorkRef;
+use Omnishow\Model\ImageKind;
+use Omnishow\Model\Role;
+use Omnishow\Model\WorkRef;
 
 $work = $films->lookup('tmdb')->work(WorkRef::imdb('tt0133093'), 'fr-FR');
 
@@ -39,18 +39,18 @@ $work->identifiers->get('wikidata');           // the work in another register
 the names given - skipping those that cannot resolve the ref, and returns the first record found:
 
 ```php
-use Omnifilm\Model\Scheme;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
-use Omnifilm\Omdb\OmdbFactory;
-use Omnifilm\Registry;
-use Omnifilm\Wikidata\WikidataFactory;
+use Omnishow\Model\Scheme;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
+use Omnishow\Omdb\OmdbFactory;
+use Omnishow\Registry;
+use Omnishow\Wikidata\WikidataFactory;
 use Symfony\Component\HttpClient\HttpClient;
 
 $http = HttpClient::create(['timeout' => 30]);
 $films = new Registry([new OmdbFactory($http), new WikidataFactory($http)], [
     'omdb' => ['factory' => 'omdb', 'options' => ['api_key' => 'not-used-here']],
-    'open' => ['factory' => 'wikidata', 'options' => ['user_agent' => 'OmnisenseDocs/1.0 (https://github.com/glitchr-omnisense/omnifilm)']],
+    'open' => ['factory' => 'wikidata', 'options' => ['user_agent' => 'OmnisenseDocs/1.0 (https://github.com/glitchr-omnisense/omnishow)']],
 ]);
 
 // OMDb resolves IMDb numbers only: a TMDB series number goes on to Wikidata, OMDb is not called.
@@ -86,7 +86,7 @@ $ids = $open->identifiers->merge($pictures->identifiers);   // these first, comp
 ```
 
 An exception of a provider (unreachable, a refused key) ends `Registry::work()`: catch
-`OmnifilmException` around it, or around each provider's own `work()` for a chain that goes on.
+`OmnishowException` around it, or around each provider's own `work()` for a chain that goes on.
 
 ## What each provider does
 

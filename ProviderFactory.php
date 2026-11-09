@@ -1,11 +1,11 @@
 <?php
 
-namespace Omnifilm;
+namespace Omnishow;
 
 /**
- * A provider's factory fills a Config - its name ("omnifilm.factory_name"),
- * its title ("omnifilm.factory_title"), the options it needs
- * ("omnifilm.required_options") and the defaults of the others - then builds
+ * A provider's factory fills a Config - its name ("omnishow.factory_name"),
+ * its title ("omnishow.factory_title"), the options it needs
+ * ("omnishow.required_options") and the defaults of the others - then builds
  * the provider from it.
  *
  * Nothing here calls anything: a factory whose provider is reached over
@@ -16,13 +16,13 @@ abstract class ProviderFactory implements ProviderFactoryInterface
 {
     public function getName(): string
     {
-        return $this->createConfig()->string('omnifilm.factory_name') ?? static::class;
+        return $this->createConfig()->string('omnishow.factory_name') ?? static::class;
     }
 
     public function create(array $options = []): ProviderInterface
     {
         $config = $this->createConfig($options);
-        $required = $config->get('omnifilm.required_options', []);
+        $required = $config->get('omnishow.required_options', []);
         $config->validateNotEmpty(\is_array($required) ? array_values(array_filter($required, 'is_string')) : []);
 
         return $this->build($config);

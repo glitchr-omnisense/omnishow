@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnifilm;
+namespace Omnishow;
 
 /** Builds a provider from its options (a key, a token, a User-Agent...). */
 interface ProviderFactoryInterface

@@ -1,10 +1,10 @@
 <?php
 
-namespace Omnifilm;
+namespace Omnishow;
 
-use Omnifilm\Exception\NotSupportedException;
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkRef;
+use Omnishow\Exception\NotSupportedException;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkRef;
 
 interface LookupInterface
 {

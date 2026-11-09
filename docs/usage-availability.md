@@ -7,13 +7,13 @@ order: 34
 
 `AvailabilityInterface::offers(WorkRef $ref, string $country): array` gives where a work can be
 watched in one country (ISO 3166-1 alpha-2, any case), as the provider knows it today. One provider
-answers it: `omnifilm/tmdb`, from TMDB's watch providers - JustWatch's data, which TMDB asks to
+answers it: `omnishow/tmdb`, from TMDB's watch providers - JustWatch's data, which TMDB asks to
 credit where it is shown (the provider's `attribution` says so). The core's `FixedProvider`
 answers it from offers given in advance ([Testing](testing.md)).
 
 ```php
-use Omnifilm\Model\OfferKind;
-use Omnifilm\Model\WorkRef;
+use Omnishow\Model\OfferKind;
+use Omnishow\Model\WorkRef;
 
 foreach ($films->availability('tmdb')->offers(WorkRef::tmdb(603), 'FR') as $offer) {
     printf("%-6s %-20s %s\n", $offer->kind->value, $offer->service, $offer->url);

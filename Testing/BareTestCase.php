@@ -1,15 +1,15 @@
 <?php
 
-namespace Omnifilm\Testing;
+namespace Omnishow\Testing;
 
 use Composer\Autoload\ClassLoader;
-use Omnifilm\Registry;
+use Omnishow\Registry;
 use PHPUnit\Framework\TestCase;
 
 /**
  * The check every package of the family runs: each of its classes loaded in
  * a PHP process of its own (this one has loaded PHPUnit), with nothing from
- * outside but omnisense/omnifilm and what the package requires - no
+ * outside but omnisense/omnishow and what the package requires - no
  * framework, no HTTP client, no application, even in the harness where they
  * are installed beside it. A package names its entry class and the Composer
  * packages it requires; FOREIGN lists what may never load,
@@ -98,7 +98,7 @@ abstract class BareTestCase extends TestCase
     }
 
     /**
-     * The files loaded from outside the package, omnisense/omnifilm and the
+     * The files loaded from outside the package, omnisense/omnishow and the
      * packages required - and those Composer includes for every package at
      * start (autoload "files").
      *
@@ -151,7 +151,7 @@ abstract class BareTestCase extends TestCase
 
     /**
      * Runs PHP on the arguments, with the package's autoloader in
-     * OMNIFILM_AUTOLOAD, and decodes what it prints.
+     * OMNISHOW_AUTOLOAD, and decodes what it prints.
      *
      * @param list<string> $arguments
      *
@@ -159,7 +159,7 @@ abstract class BareTestCase extends TestCase
      */
     protected static function php(array $arguments): array
     {
-        $process = proc_open([\PHP_BINARY, ...$arguments], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes, null, ['OMNIFILM_AUTOLOAD' => static::autoload()] + getenv());
+        $process = proc_open([\PHP_BINARY, ...$arguments], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes, null, ['OMNISHOW_AUTOLOAD' => static::autoload()] + getenv());
         self::assertIsResource($process);
         $out = (string) stream_get_contents($pipes[1]);
         $err = (string) stream_get_contents($pipes[2]);

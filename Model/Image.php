@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnifilm\Model;
+namespace Omnishow\Model;
 
 /**
  * A picture of a work, where its provider serves it. Its rights are the

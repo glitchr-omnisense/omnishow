@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnifilm\Http;
+namespace Omnishow\Http;
 
 /**
  * A decoded JSON answer, read by key without trusting its shape: each

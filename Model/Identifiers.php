@@ -1,8 +1,8 @@
 <?php
 
-namespace Omnifilm\Model;
+namespace Omnishow\Model;
 
-use Omnifilm\Exception\InvalidArgumentException;
+use Omnishow\Exception\InvalidArgumentException;
 
 /**
  * The identifiers of one work (or one person) in the registers that know it,

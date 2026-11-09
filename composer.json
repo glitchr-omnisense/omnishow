@@ -1,9 +1,9 @@
 {
-    "name": "omnisense/omnifilm",
+    "name": "omnisense/omnishow",
     "type": "library",
-    "description": "Omnifilm: the record of a film, a series or an episode under any PHP host, whoever keeps it - titles, dates, cast and crew, pictures, identifiers across registers (IMDb, TMDB, TheTVDB, Trakt, Wikidata), a season's episodes and where to watch, behind contracts by capability. Providers are packages of their own (omnifilm/tmdb, omnifilm/omdb, omnifilm/tvdb, omnifilm/trakt, omnifilm/wikidata); the Symfony and Laravel bridges live in omnibridge.",
-    "keywords": ["film", "movie", "tv", "series", "episode", "filmography", "tmdb", "imdb", "wikidata", "framework-agnostic", "omnifilm"],
-    "homepage": "https://github.com/glitchr-omnisense/omnifilm",
+    "description": "Omnishow: the record of a film, a series or an episode under any PHP host, whoever keeps it - titles, dates, cast and crew, pictures, identifiers across registers (IMDb, TMDB, TheTVDB, Trakt, Wikidata), a season's episodes and where to watch, behind contracts by capability. Providers are packages of their own (omnishow/tmdb, omnishow/omdb, omnishow/tvdb, omnishow/trakt, omnishow/wikidata); the Symfony and Laravel bridges live in omnibridge.",
+    "keywords": ["film", "movie", "tv", "series", "episode", "filmography", "tmdb", "imdb", "wikidata", "framework-agnostic", "omnishow"],
+    "homepage": "https://github.com/glitchr-omnisense/omnishow",
     "license": "MIT",
     "authors": [
         {
@@ -22,19 +22,16 @@
         "symfony/http-client": "^6.4|^7.0|^8.0"
     },
     "suggest": {
-        "omnifilm/tmdb": "The Movie Database: search, records with cast and pictures, episodes, where to watch (JustWatch's data)",
-        "omnifilm/omdb": "OMDb: records by IMDb number with IMDb, Rotten Tomatoes and Metacritic ratings",
-        "omnifilm/tvdb": "TheTVDB: series and their episodes, films",
-        "omnifilm/trakt": "Trakt: records and episodes, identifiers across registers",
-        "omnifilm/wikidata": "Wikidata: open records (CC0) and identifiers across registers, no key",
-        "omnisense/omnibridge": "The host contracts; omnibridge/symfony and omnibridge/laravel wire omnifilm into their host when a site needs it"
-    },
-    "replace": {
-        "omniscient/omnifilm": "self.version"
+        "omnishow/tmdb": "The Movie Database: search, records with cast and pictures, episodes, where to watch (JustWatch's data)",
+        "omnishow/omdb": "OMDb: records by IMDb number with IMDb, Rotten Tomatoes and Metacritic ratings",
+        "omnishow/tvdb": "TheTVDB: series and their episodes, films",
+        "omnishow/trakt": "Trakt: records and episodes, identifiers across registers",
+        "omnishow/wikidata": "Wikidata: open records (CC0) and identifiers across registers, no key",
+        "omnisense/omnibridge": "The host contracts; omnibridge/symfony and omnibridge/laravel wire omnishow into their host when a site needs it"
     },
     "autoload": {
         "psr-4": {
-            "Omnifilm\\": ""
+            "Omnishow\\": ""
         },
         "exclude-from-classmap": [
             "/Tests/",
@@ -44,7 +41,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Omnifilm\\Tests\\": "Tests/"
+            "Omnishow\\Tests\\": "Tests/"
         }
     },
     "extra": {

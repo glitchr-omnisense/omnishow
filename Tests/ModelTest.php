@@ -1,19 +1,19 @@
 <?php
 
-namespace Omnifilm\Tests;
+namespace Omnishow\Tests;
 
-use Omnifilm\Capabilities;
-use Omnifilm\Exception\InvalidArgumentException;
-use Omnifilm\Model\Credit;
-use Omnifilm\Model\Identifiers;
-use Omnifilm\Model\Image;
-use Omnifilm\Model\ImageKind;
-use Omnifilm\Model\Query;
-use Omnifilm\Model\Role;
-use Omnifilm\Model\Scheme;
-use Omnifilm\Model\Work;
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
+use Omnishow\Capabilities;
+use Omnishow\Exception\InvalidArgumentException;
+use Omnishow\Model\Credit;
+use Omnishow\Model\Identifiers;
+use Omnishow\Model\Image;
+use Omnishow\Model\ImageKind;
+use Omnishow\Model\Query;
+use Omnishow\Model\Role;
+use Omnishow\Model\Scheme;
+use Omnishow\Model\Work;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
 use PHPUnit\Framework\TestCase;
 
 final class ModelTest extends TestCase

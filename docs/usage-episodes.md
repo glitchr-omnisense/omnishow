@@ -11,8 +11,8 @@ OMDb, TheTVDB and Trakt answer it; Wikidata does not (its season and ordinal qua
 much from one series to another to be listed reliably).
 
 ```php
-use Omnifilm\Model\WorkRef;
-use Omnifilm\Model\WorkType;
+use Omnishow\Model\WorkRef;
+use Omnishow\Model\WorkType;
 
 $series = WorkRef::tvdb(70533);                         // Twin Peaks, a series by default for TheTVDB
 foreach ($films->episodes('tvdb')->episodes($series, 1, 'fr') as $episode) {
