@@ -2,6 +2,31 @@
 
 ## Unreleased (1.x)
 
+### Changed
+- `omnisense/omnishow` continues `omnisense/omnifilm`, merged into it on 2026-11-09: the namespace
+  `Omnifilm\` is `Omnishow\` (`OmnifilmException` is `OmnishowException`), the configuration keys
+  `omnishow.*`, the providers `omnishow/<provider>`. omnifilm's contracts are the work family.
+- The registry's messages name a provider, no longer a "film provider": `No "x" provider;
+  configured: ...`.
+
+### Added
+- The video family: `VideoInterface` (a video's record, several in one call),
+  `VideoSearchInterface`, `ChannelInterface` (a channel, its videos), `PlaylistInterface` (a
+  channel's playlists, a playlist's videos); the models `Video`, `VideoRef` (with `fromUrl()`),
+  `Platform` (YouTube, Vimeo, Twitch: page, player, privacy-friendly player), `Channel`,
+  `Playlist`, `VideoQuery`, `Page`; `ImageKind::Thumbnail`.
+- The live family: `LiveInterface` (`live()`, `schedule()`), the models `Stream` and `LiveState`.
+- `Work::$videos` (`VideoLink`s to the trailers and clips a work provider names) and
+  `Work::trailer()`; `Registry::findVideo()` reads a video from the provider that hosts its
+  platform.
+- `Capabilities`: `video`, `videoSearch`, `channels`, `playlists`, `live`, `schedule`,
+  `platforms`, `hosts()`, `families()`; `Registry::video()`, `videoSearch()`, `channels()`,
+  `playlists()`, `live()`; `NotSupportedException::video()`.
+- `Http\Data::dateTime()` (an RFC 3339 moment, in UTC) and `Http\Data::duration()` (ISO 8601
+  durations, or seconds).
+- `Testing\FixedVideoProvider` and its factory; the bare script and `BareTest` read a work's
+  trailer, a channel, a playlist and what is live from it.
+
 ### Fixed
 - No exception `JsonClient::request()` throws keeps its trace's arguments: an error answered (a refused key,
   nothing there, a server error, a body that is not JSON) kept the request's options - the query,

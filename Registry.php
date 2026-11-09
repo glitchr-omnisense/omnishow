@@ -4,6 +4,8 @@ namespace Omnishow;
 
 use Omnishow\Exception\InvalidConfigException;
 use Omnishow\Exception\NotSupportedException;
+use Omnishow\Model\Video;
+use Omnishow\Model\VideoRef;
 use Omnishow\Model\Work;
 use Omnishow\Model\WorkRef;
 
@@ -18,6 +20,12 @@ use Omnishow\Model\WorkRef;
  *
  *   $registry->search('films')->search(new Query('Stalker', WorkType::Movie));
  *   $registry->work(WorkRef::imdb('tt0079944'));   // the first provider that finds it
+ *
+ * Video and live providers sit in the same registry:
+ *
+ *   $registry->channels('youtube')->channelVideos('@example');
+ *   $registry->live('twitch')->live('example');
+ *   $registry->findVideo($work->trailer()->ref);   // the first provider that hosts its platform
  */
 final class Registry
 {
@@ -76,6 +84,58 @@ final class Registry
         return $provider instanceof AvailabilityInterface ? $provider : throw NotSupportedException::capability($provider, $name, 'say where to watch');
     }
 
+    public function video(string $name): VideoInterface
+    {
+        $provider = $this->get($name);
+
+        return $provider instanceof VideoInterface ? $provider : throw NotSupportedException::capability($provider, $name, 'give videos');
+    }
+
+    public function videoSearch(string $name): VideoSearchInterface
+    {
+        $provider = $this->get($name);
+
+        return $provider instanceof VideoSearchInterface ? $provider : throw NotSupportedException::capability($provider, $name, 'search videos');
+    }
+
+    public function channels(string $name): ChannelInterface
+    {
+        $provider = $this->get($name);
+
+        return $provider instanceof ChannelInterface ? $provider : throw NotSupportedException::capability($provider, $name, 'give channels');
+    }
+
+    public function playlists(string $name): PlaylistInterface
+    {
+        $provider = $this->get($name);
+
+        return $provider instanceof PlaylistInterface ? $provider : throw NotSupportedException::capability($provider, $name, 'give playlists');
+    }
+
+    public function live(string $name): LiveInterface
+    {
+        $provider = $this->get($name);
+
+        return $provider instanceof LiveInterface ? $provider : throw NotSupportedException::capability($provider, $name, 'say what is live');
+    }
+
+    /**
+     * The video's record from the first provider, in the configuration's
+     * order (or the order named), that hosts its platform: a trailer TMDB
+     * links to, read from YouTube.
+     */
+    public function findVideo(VideoRef $ref, string ...$names): ?Video
+    {
+        foreach ($names ?: $this->names() as $name) {
+            $provider = $this->get($name);
+            if ($provider instanceof VideoInterface && $provider->capabilities()->hosts($ref) && null !== $video = $provider->video($ref)) {
+                return $video;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * The work from the first provider, in the configuration's order (or the
      * order named), that finds it by this register: an IMDb number read from
@@ -113,8 +173,8 @@ final class Registry
 
     private function factory(string $name): ProviderFactoryInterface
     {
-        $provider = $this->config[$name] ?? throw new InvalidConfigException(\sprintf('No "%s" film provider; configured: %s.', $name, implode(', ', array_keys($this->config)) ?: 'none'));
+        $provider = $this->config[$name] ?? throw new InvalidConfigException(\sprintf('No "%s" provider; configured: %s.', $name, implode(', ', array_keys($this->config)) ?: 'none'));
 
-        return $this->factories[$provider['factory']] ?? throw new InvalidConfigException(\sprintf('No "%s" factory for the "%s" film provider; installed: %s.', $provider['factory'], $name, implode(', ', array_keys($this->factories)) ?: 'none'));
+        return $this->factories[$provider['factory']] ?? throw new InvalidConfigException(\sprintf('No "%s" factory for the "%s" provider; installed: %s.', $provider['factory'], $name, implode(', ', array_keys($this->factories)) ?: 'none'));
     }
 }

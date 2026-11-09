@@ -136,6 +136,37 @@ final readonly class Data
         return $this->values;
     }
 
+    /** A moment ("2009-10-25T06:57:33Z", "2026-11-09T20:00:00+01:00"), in UTC; null when unreadable. */
+    public function dateTime(string|int $key): ?\DateTimeImmutable
+    {
+        $value = $this->string($key);
+        if (null === $value || !preg_match('~^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}~', $value)) {
+            return null;
+        }
+        try {
+            return (new \DateTimeImmutable($value, new \DateTimeZone('UTC')))->setTimezone(new \DateTimeZone('UTC'));
+        } catch (\Exception) {
+            return null;
+        }
+    }
+
+    /**
+     * A duration in seconds: an ISO 8601 duration ("PT3M33S", "PT1H2M",
+     * "P1DT2H", "P0D") or a number of seconds; null when unreadable.
+     */
+    public function duration(string|int $key): ?int
+    {
+        $value = $this->get($key);
+        if (\is_int($value) || \is_float($value) || (\is_string($value) && is_numeric($value))) {
+            return (int) $value;
+        }
+        if (!\is_string($value) || !preg_match('~^P(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)(?:\.\d+)?S)?)?$~', trim($value), $m) || 'P' === trim($value) || str_ends_with(trim($value), 'T')) {
+            return null;
+        }
+
+        return (int) ($m[1] ?? 0) * 604800 + (int) ($m[2] ?? 0) * 86400 + (int) ($m[3] ?? 0) * 3600 + (int) ($m[4] ?? 0) * 60 + (int) ($m[5] ?? 0);
+    }
+
     /** A date ("2011-04-17", "2011-04-17T00:00:00Z", or the format given); null when unreadable. */
     public function date(string|int $key, ?string $format = null): ?\DateTimeImmutable
     {

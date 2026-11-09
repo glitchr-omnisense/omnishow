@@ -4,7 +4,9 @@
 /*
  * Omnishow in plain PHP: no bundle, no container, no framework. A registry
  * of one provider answering from works it holds; a search, a work found by
- * its IMDb number, a season's episodes, where to watch; then a provider's
+ * its IMDb number, a season's episodes, where to watch; a video provider
+ * beside it: a work's trailer read from it, a channel's videos, a
+ * playlist, what is live and scheduled; then a provider's
  * JSON call answered with no network (a record, a 404, an error whose
  * message keeps the key out). Prints what happened and every class and file
  * PHP loaded, as JSON.
@@ -12,32 +14,53 @@
 
 use Omnishow\Exception\ProviderException;
 use Omnishow\Http\JsonClient;
+use Omnishow\Model\Channel;
 use Omnishow\Model\Credit;
 use Omnishow\Model\Identifiers;
 use Omnishow\Model\Image;
 use Omnishow\Model\ImageKind;
+use Omnishow\Model\LiveState;
 use Omnishow\Model\Offer;
 use Omnishow\Model\OfferKind;
+use Omnishow\Model\Platform;
+use Omnishow\Model\Playlist;
 use Omnishow\Model\Query;
 use Omnishow\Model\Role;
+use Omnishow\Model\Stream;
+use Omnishow\Model\Video;
+use Omnishow\Model\VideoLink;
+use Omnishow\Model\VideoRef;
 use Omnishow\Model\Work;
 use Omnishow\Model\WorkRef;
 use Omnishow\Model\WorkType;
 use Omnishow\Registry;
 use Omnishow\Testing\FixedProviderFactory;
+use Omnishow\Testing\FixedVideoProviderFactory;
 use Omnishow\Testing\RecordedHttpClient;
 
 require getenv('OMNISHOW_AUTOLOAD') ?: '/harness/vendor/autoload.php';
 
 $peaks = Identifiers::of(['imdb' => 'tt0098936', 'tvdb' => 70533]);
 $works = [
-    new Work(WorkType::Movie, 'Stalker', Identifiers::of(['imdb' => 'tt0079944', 'wikidata' => 'Q200437']), 'fixed', originalTitle: 'Сталкер', year: 1979, released: new DateTimeImmutable('1979-05-25'), runtime: 162, genres: ['Science fiction', 'Drama'], images: [new Image(ImageKind::Poster, 'https://example.org/stalker.jpg', 500, 750)], credits: [new Credit('Andrei Tarkovsky', Role::Director), new Credit('Alexander Kaidanovsky', Role::Cast, 'Stalker', 0)]),
+    new Work(WorkType::Movie, 'Stalker', Identifiers::of(['imdb' => 'tt0079944', 'wikidata' => 'Q200437']), 'fixed', originalTitle: 'Сталкер', year: 1979, released: new DateTimeImmutable('1979-05-25'), runtime: 162, genres: ['Science fiction', 'Drama'], images: [new Image(ImageKind::Poster, 'https://example.org/stalker.jpg', 500, 750)], credits: [new Credit('Andrei Tarkovsky', Role::Director), new Credit('Alexander Kaidanovsky', Role::Cast, 'Stalker', 0)], videos: [new VideoLink(VideoRef::youtube('aqz-KE-bpKQ'), 'Trailer', 'trailer', 'en', true)]),
     new Work(WorkType::Series, 'Twin Peaks', $peaks, 'fixed', year: 1990, season: 2),
     new Work(WorkType::Episode, 'Traces to Nowhere', Identifiers::none(), 'fixed', series: $peaks, season: 1, number: 2),
     new Work(WorkType::Episode, 'Pilot', Identifiers::none(), 'fixed', series: $peaks, season: 1, number: 1),
 ];
-$registry = new Registry([new FixedProviderFactory($works, ['movie:imdb:tt0079944' => ['FR' => [new Offer(OfferKind::Stream, 'Example Films', 'FR', 'https://example.org/stalker')]]])], [
+$channel = new Channel(Platform::YouTube, 'UCexample', 'Example Channel', '@example');
+$videos = [
+    new Video(VideoRef::youtube('aqz-KE-bpKQ'), 'Stalker - trailer', 'fixed-video', duration: 150, published: new DateTimeImmutable('2014-11-10T14:05:55Z'), channel: $channel),
+    new Video(VideoRef::youtube('vKQi3bBA1y8'), 'A talk', 'fixed-video', duration: 3600, published: new DateTimeImmutable('2021-03-01T12:00:00Z'), channel: $channel),
+];
+$registry = new Registry([
+    new FixedProviderFactory($works, ['movie:imdb:tt0079944' => ['FR' => [new Offer(OfferKind::Stream, 'Example Films', 'FR', 'https://example.org/stalker')]]]),
+    new FixedVideoProviderFactory($videos, [$channel], ['PLexample' => new Playlist(Platform::YouTube, 'PLexample', 'Trailers', 'fixed-video', channel: $channel)], ['PLexample' => ['aqz-KE-bpKQ']], ['UCexample' => [
+        new Stream(Platform::YouTube, LiveState::Live, 'fixed-video', $channel, 'On air', video: VideoRef::youtube('vKQi3bBA1y8'), viewers: 12),
+        new Stream(Platform::YouTube, LiveState::Upcoming, 'fixed-video', $channel, 'Tomorrow', scheduled: new DateTimeImmutable('2026-11-10T18:00:00Z')),
+    ]]),
+], [
     'films' => ['factory' => 'fixed'],
+    'videos' => ['factory' => 'fixed-video'],
 ]);
 
 $report['capabilities'] = $registry->get('films')->capabilities()->toArray();
@@ -47,6 +70,14 @@ $report['work'] = $work?->toArray();
 $report['directors'] = array_map(static fn (Credit $credit) => $credit->name, $work?->credits(Role::Director) ?? []);
 $report['episodes'] = array_map(static fn (Work $episode) => [$episode->number, $episode->title], $registry->episodes('films')->episodes(WorkRef::tvdb(70533), 1));
 $report['offers'] = array_map(static fn (Offer $offer) => $offer->toArray(), $registry->availability('films')->offers(WorkRef::imdb('tt0079944'), 'fr'));
+
+$trailer = $work?->trailer();
+$video = null === $trailer ? null : $registry->findVideo($trailer->ref);
+$report['video'] = [$video?->title, $video?->duration, $video?->embed(true), $registry->get('videos')->capabilities()->families()];
+$report['channel'] = array_map(static fn (Video $one) => $one->ref->id, $registry->channels('videos')->channelVideos('@example')->items);
+$report['playlist'] = array_map(static fn (Video $one) => [$one->position, $one->title], $registry->playlists('videos')->playlistVideos('PLexample')->items);
+$live = $registry->live('videos')->live('@example');
+$report['live'] = [$live?->title, $live?->viewers, array_map(static fn (Stream $one) => $one->scheduled?->format(DATE_ATOM), $registry->live('videos')->schedule('@example'))];
 
 $http = RecordedHttpClient::routes([
     '~^GET https://api\.example\.org/works/1~' => [200, '{"title": "Stalker", "release": {"date": "1979-05-25"}, "cast": [{"name": "Anatoly Solonitsyn"}, "not an object"]}'],

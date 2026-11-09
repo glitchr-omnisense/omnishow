@@ -9,5 +9,7 @@ enum ImageKind: string
     /** A frame of an episode. */
     case Still = 'still';
     case Logo = 'logo';
+    /** A video's, a channel's or a playlist's picture at its platform. */
+    case Thumbnail = 'thumbnail';
     case Other = 'other';
 }

@@ -22,6 +22,7 @@ final readonly class Work
      * @param ?Identifiers $series    an episode's series
      * @param ?int         $season    an episode's season (0: specials), or a series' number of seasons
      * @param ?int         $number    an episode's number in its season
+     * @param list<VideoLink> $videos its trailers, teasers and clips hosted elsewhere (a link: the platform's provider gives the video's record)
      */
     public function __construct(
         public WorkType $type,
@@ -43,6 +44,7 @@ final readonly class Work
         public ?Identifiers $series = null,
         public ?int $season = null,
         public ?int $number = null,
+        public array $videos = [],
     ) {
     }
 
@@ -63,6 +65,23 @@ final readonly class Work
         }
 
         return null;
+    }
+
+    /**
+     * Its trailer: the first official one, else the first; null when it has
+     * none. Its record comes from the platform's provider:
+     * $registry->findVideo($work->trailer()->ref).
+     */
+    public function trailer(?Platform $platform = null): ?VideoLink
+    {
+        $trailers = array_values(array_filter($this->videos, static fn (VideoLink $link) => 'trailer' === $link->kind && (null === $platform || $platform === $link->ref->platform)));
+        foreach ($trailers as $trailer) {
+            if (true === $trailer->official) {
+                return $trailer;
+            }
+        }
+
+        return $trailers[0] ?? null;
     }
 
     /** @return list<Credit> */
@@ -93,6 +112,7 @@ final readonly class Work
             'series' => $this->series?->toArray(),
             'season' => $this->season,
             'number' => $this->number,
+            'videos' => array_map(static fn (VideoLink $link) => $link->toArray(), $this->videos),
             'source' => $this->source,
         ];
     }

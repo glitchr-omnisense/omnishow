@@ -59,9 +59,9 @@ final class RegistryTest extends TestCase
             $registry->get('shows');
             self::fail('No "shows" provider.');
         } catch (InvalidConfigException $e) {
-            self::assertSame('No "shows" film provider; configured: films.', $e->getMessage());
+            self::assertSame('No "shows" provider; configured: films.', $e->getMessage());
         }
-        $this->expectExceptionMessage('No "tmdb" factory for the "films" film provider; installed: fixed.');
+        $this->expectExceptionMessage('No "tmdb" factory for the "films" provider; installed: fixed.');
         $registry->get('films');
     }
 

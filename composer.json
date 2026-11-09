@@ -1,8 +1,26 @@
 {
     "name": "omnisense/omnishow",
     "type": "library",
-    "description": "Omnishow: the record of a film, a series or an episode under any PHP host, whoever keeps it - titles, dates, cast and crew, pictures, identifiers across registers (IMDb, TMDB, TheTVDB, Trakt, Wikidata), a season's episodes and where to watch, behind contracts by capability. Providers are packages of their own (omnishow/tmdb, omnishow/omdb, omnishow/tvdb, omnishow/trakt, omnishow/wikidata); the Symfony and Laravel bridges live in omnibridge.",
-    "keywords": ["film", "movie", "tv", "series", "episode", "filmography", "tmdb", "imdb", "wikidata", "framework-agnostic", "omnishow"],
+    "description": "Omnishow: what is shown, under any PHP host, whoever keeps it - in three families of contracts: work (the record of a film, a series or an episode: titles, dates, cast and crew, pictures, identifiers across registers, a season's episodes, where to watch, its trailers), video (a video hosted elsewhere: its record, its player and the player's privacy-friendly variant, a channel's videos, playlists, a search) and live (whether a channel is on air, its stream, its schedule). Providers are packages of their own (omnishow/tmdb, omnishow/omdb, omnishow/tvdb, omnishow/trakt, omnishow/wikidata, omnishow/youtube, omnishow/vimeo, omnishow/twitch); the Symfony and Laravel bridges live in omnibridge.",
+    "keywords": [
+        "film",
+        "movie",
+        "tv",
+        "series",
+        "episode",
+        "video",
+        "live",
+        "stream",
+        "embed",
+        "youtube",
+        "vimeo",
+        "twitch",
+        "tmdb",
+        "imdb",
+        "wikidata",
+        "framework-agnostic",
+        "omnishow"
+    ],
     "homepage": "https://github.com/glitchr-omnisense/omnishow",
     "license": "MIT",
     "authors": [
@@ -27,6 +45,9 @@
         "omnishow/tvdb": "TheTVDB: series and their episodes, films",
         "omnishow/trakt": "Trakt: records and episodes, identifiers across registers",
         "omnishow/wikidata": "Wikidata: open records (CC0) and identifiers across registers, no key",
+        "omnishow/youtube": "YouTube: videos, channels, playlists, a search; what a channel broadcasts live and has scheduled (an API key)",
+        "omnishow/vimeo": "Vimeo: videos, a user's videos, showcases, a search (an access token, or a client id and secret)",
+        "omnishow/twitch": "Twitch: whether a channel is live, its stream and its schedule (a client id and secret)",
         "omnisense/omnibridge": "The host contracts; omnibridge/symfony and omnibridge/laravel wire omnishow into their host when a site needs it"
     },
     "autoload": {

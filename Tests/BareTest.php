@@ -8,7 +8,8 @@ use Omnishow\Testing\BareTestCase;
 
 /**
  * omnisense/omnishow with no framework: the harness's bare script searches,
- * looks up, lists episodes and offers, and makes a provider's JSON call,
+ * looks up, lists episodes and offers, reads a work's trailer from a video
+ * provider, a channel, a playlist, what is live, and makes a provider's JSON call,
  * in a PHP process of its own - nothing may load from outside the package
  * but Symfony's HTTP client contracts (interfaces only).
  */
@@ -40,8 +41,14 @@ final class BareTest extends BareTestCase
         self::assertNull($report->get('json-404'));
         self::assertSame('Example answered 500 for GET /works/3. Internal error', $report->get('json-error'));
 
+        self::assertSame(['Stalker - trailer', 150, 'https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ', ['video', 'live']], $report->get('video'));
+        self::assertSame(['vKQi3bBA1y8', 'aqz-KE-bpKQ'], $report->get('channel'));
+        self::assertSame([[0, 'Stalker - trailer']], $report->get('playlist'));
+        self::assertSame(['On air', 12, ['2026-11-10T18:00:00+00:00']], $report->get('live'));
+
         $symbols = $report->strings('loaded.symbols');
         self::assertContains('Omnishow\Testing\FixedProvider', $symbols);
+        self::assertContains('Omnishow\Testing\FixedVideoProvider', $symbols);
         self::assertSame([], self::foreign($symbols), 'no class of a framework, an HTTP client or an application');
         self::assertSame([], self::outside($report->strings('loaded.files'), $report->strings('loaded.eager')), 'no file but the package and what it requires');
     }
