@@ -34,6 +34,10 @@ There is no conformance suite shared by the providers: each tests its own mappin
 
 ## What was run live
 
+Nothing of the video and live families: the first site with a key runs a video, a channel's
+videos and `live()` once.
+
+
 - `docker compose run --rm omnishow live` (`Omnishow\Wikidata\Tests\LiveTest`), 2026-10-24:
   Stalker found by a search narrowed to 1979, The Shawshank Redemption by its IMDb number (TMDB
   278, Frank Darabont), Game of Thrones by its TMDB series number (Q23572, tt0944947, TheTVDB
@@ -47,6 +51,10 @@ There is no conformance suite shared by the providers: each tests its own mappin
 
 - TMDB, OMDb, TheTVDB and Trakt were never called: no account was used. Their answers in the tests
   follow their published references; the first site with a key runs a search and a lookup once.
+- YouTube, Vimeo and Twitch were never called (2026-11-09): no key, token or client id was used.
+  Their answers follow the references read that day; the tests record the exact requests. Not
+  settled by the references: the most ids `videos.list` takes (50 is used, not documented), whether
+  Vimeo lists another user's showcase to a public token, the body of a spent YouTube quota.
 - Wikidata's episodes are not implemented (its season qualifiers vary too much), nor people's IMDb
   numbers (one more call per person).
 - The [Symfony](symfony.md) and [Laravel](laravel.md) pages were written from the classes'

@@ -13,9 +13,13 @@ framework-free).
    `omnishow.factory_title`, `omnishow.required_options` and the defaults; `build()` makes the
    provider. Its constructor takes `?HttpClientInterface $http = null` - the application's client,
    a `MockHttpClient` or `RecordedHttpClient` in tests, `HttpClient::create()` when none.
-2. **The provider** implements `ProviderInterface` and the capability interfaces it has.
+2. **The provider** implements `ProviderInterface` and the capability interfaces it has - work
+   (`SearchInterface`, `LookupInterface`, `EpisodesInterface`, `AvailabilityInterface`), video
+   (`VideoInterface`, `VideoSearchInterface`, `ChannelInterface`, `PlaylistInterface`: it names
+   its `platforms`), live (`LiveInterface`). A work provider that knows a work's videos gives them
+   as `VideoLink`s in `Work::$videos`; it does not read the platform itself.
    `capabilities()` is honest: the types, the registers per type, the attribution its terms ask
-   for, the terms' URLs, whether it needs a key. `work()` throws `NotSupportedException::ref()` for
+   for, the terms' URLs, whether it needs a key, the platforms it hosts. `work()` throws `NotSupportedException::ref()` for
    a register it does not resolve and returns null for a work it does not know.
 3. **Calls** go through `Http\JsonClient` (headers on every request, a 404 as null, errors as
    `ProviderException`/`UnreachableException`, no key in a `ProviderException`'s message) and

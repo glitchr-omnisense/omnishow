@@ -10,4 +10,7 @@ return [
     'tvdb' => ['Omnishow\\Tvdb\\Tests\\'],
     'trakt' => ['Omnishow\\Trakt\\Tests\\'],
     'wikidata' => ['Omnishow\\Wikidata\\Tests\\'],
+    'youtube' => ['Omnishow\\Youtube\\Tests\\'],
+    'vimeo' => ['Omnishow\\Vimeo\\Tests\\'],
+    'twitch' => ['Omnishow\\Twitch\\Tests\\'],
 ];

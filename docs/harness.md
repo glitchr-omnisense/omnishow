@@ -25,7 +25,7 @@ the volume (`/harness`); the entrypoint runs `composer install` the first time a
 update` when the `composer.json` changed:
 
 - the core from its checkout (mounted at `/omnishow/core`, a path repository, symlinked);
-- each provider listed in `docker/harness/plugins.php` (tmdb, omdb, tvdb, trakt, wikidata) from a
+- each provider listed in `docker/harness/plugins.php` (tmdb, omdb, tvdb, trakt, wikidata, youtube, vimeo, twitch) from a
   checkout under `OMNISHOW_PLUGINS` when there is one - `docker/.env`, git-ignored, sets it to
   `../..` when the core sits in the workspace beside the providers - else from GitHub
   (`https://github.com/glitchr-omnisense/omnishow-<slug>.git`, branch 1.x);

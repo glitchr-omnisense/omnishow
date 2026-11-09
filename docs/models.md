@@ -31,6 +31,11 @@ translate: they ignore it.
 
 ## Capabilities
 
+The video and live flags sit beside the work ones: `video`, `videoSearch`, `channels`,
+`playlists`, `live`, `schedule`, `platforms`; `contracts()` lists every contract answered,
+`families()` their families (`work`, `video`, `live`), `hosts(VideoRef)` whether `video()` gives
+that video. The work flags follow.
+
 `Omnishow\Capabilities` (a readonly value):
 
 | Property | Type | Default | |
@@ -250,6 +255,51 @@ new Query(string $text, ?WorkType $type = null, ?int $year = null, ?string $lang
 | `year` | the year of release (a series: of its first episode) |
 | `language` | the language of the titles and overviews answered, where the provider translates |
 | `limit` | at most this many works, 1 to 50 (`A search answers 1 to 50 works.` otherwise) |
+
+## The video family
+
+`VideoInterface` (`video(VideoRef)`, `videos(list<VideoRef>)`), `VideoSearchInterface`
+(`searchVideos(VideoQuery): Page<Video>`), `ChannelInterface` (`channel()`, `channelVideos()`),
+`PlaylistInterface` (`playlist()`, `playlists()`, `playlistVideos()`). A provider says the platforms
+whose videos it gives (`Capabilities::$platforms`, `hosts(VideoRef)`); `video()` throws
+`NotSupportedException::video()` for another platform's and returns null for a video its platform
+does not show.
+
+- **`Platform`**: `YouTube`, `Vimeo`, `Twitch`. `url($id)` (the watch page), `embedUrl($id)` (the
+  player), `privateEmbedUrl($embedUrl)` (YouTube's privacy-enhanced mode on
+  `www.youtube-nocookie.com`, Vimeo's `dnt=1` with its hash kept; null for Twitch),
+  `needsParent()` (Twitch's player needs `parent=<domain>`), `fromName('YouTube')`.
+- **`VideoRef`**: a platform and an identifier; `VideoRef::youtube()`, `vimeo()`, `twitch()`,
+  `fromUrl()` (YouTube's watch, youtu.be, embed, nocookie, shorts and live addresses; Vimeo's page
+  and player; a Twitch video), `url()`, `embedUrl(private: bool)`, `"youtube:aqz-KE-bpKQ"` as a
+  string.
+- **`Video`**: `ref`, `title`, `source`, `description`, `duration` (seconds), `published`,
+  `channel` (a short `Channel`), `thumbnails` (smallest first), `url`, `embedUrl`,
+  `privateEmbedUrl` (both defaulting to the platform's), `embeddable`, `tags`, `views`, `language`,
+  `privacy`, `stream` (the broadcast it is: a `Stream`, null for an upload), `position` (in the
+  playlist it was listed from). `embed(private, parent)` gives the player to put in a page;
+  `thumbnail(minWidth)`, `isLive()`.
+- **`Channel`**: `platform`, `id`, `title`, `handle`, `description`, `thumbnails`, `url`,
+  `published`, `country`, `subscribers`, `videos`, `source`.
+- **`Playlist`**: `platform`, `id`, `title`, `source`, `description`, `channel`, `thumbnails`,
+  `count`, `url`, `published`.
+- **`VideoQuery`**: the words, a `channel`, a `language`, a `limit` (1 to 50), a `page` token.
+- **`Page`** (`@template T`): `items`, `next` (the provider's token for the next page, null on the
+  last), `total` (where the platform counts); `Page::limit($limit, $max)`.
+- **`VideoLink`**: a work's video at its platform - `ref`, `name`, `kind` ("trailer", "teaser",
+  "clip"...), `language`, `official`, `published`. `Work::$videos` holds them,
+  `Work::trailer(?Platform)` picks the official trailer, and `Registry::findVideo($link->ref)`
+  reads the video from the provider that hosts its platform.
+
+## The live family
+
+`LiveInterface`: `live($channel): ?Stream` (null off air), `schedule($channel, $limit): list<Stream>`
+(soonest first; `Capabilities::$schedule` says whether the platform keeps one).
+
+- **`Stream`**: `platform`, `state` (`LiveState`: `Upcoming`, `Live`, `Ended`, `Cancelled`),
+  `source`, `channel`, `title`, `id`, `video` (the video the broadcast is, at YouTube), `scheduled`,
+  `scheduledEnd`, `started`, `ended`, `viewers`, `category`, `language`, `thumbnail`, `url`,
+  `embedUrl`, `privateEmbedUrl`, `recurring`. `embed(private, parent)`, `isLive()`, `start()`.
 
 ## The HTTP layer
 

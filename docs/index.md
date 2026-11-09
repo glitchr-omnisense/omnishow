@@ -1,11 +1,18 @@
 # omnisense/omnishow
 
-Omnishow is one PHP contract for the record of a film, a series or an episode, whoever keeps it:
-titles, dates, runtime, overview, genres, cast and crew, pictures, ratings, identifiers across the
-registers that know the work (IMDb, TMDB, TheTVDB, Trakt, Wikidata), a season's episodes and where
-to watch. An application asks every source the same questions and gets the same `Work` back; each
-source is a package of its own (`omnishow/tmdb`, `omnishow/wikidata`...) that turns the questions
-into the source's API calls.
+Omnishow is one PHP family for what is shown, whoever keeps it, in three families of contracts:
+
+- **work** - the record of a film, a series or an episode: titles, dates, runtime, overview,
+  genres, cast and crew, pictures, ratings, identifiers across the registers that know the work
+  (IMDb, TMDB, TheTVDB, Trakt, Wikidata), a season's episodes, where to watch, the trailers it links
+  to;
+- **video** - a video hosted elsewhere: its record, its player and the player's privacy-friendly
+  variant, a channel's videos, playlists, a search ([Videos](usage-video.md));
+- **live** - whether a channel is on air, its stream, its schedule ([Live](usage-live.md)).
+
+An application asks every source the same questions and gets the same `Work`, `Video` or `Stream`
+back; each source is a package of its own (`omnishow/tmdb`, `omnishow/youtube`...) that turns the
+questions into the source's API calls and implements the contracts it can fulfil.
 
 ```php
 $films->search('open')->search(new Query('Stalker', WorkType::Movie, 1979));   // Work[], best first
@@ -13,13 +20,16 @@ $films->lookup('open')->work(WorkRef::wikidata('Q200437'), 'fr');               
 $films->work(WorkRef::imdb('tt0079944'), 'fr');                                 // the first provider that finds it
 $films->episodes('tmdb')->episodes(WorkRef::tmdb(1920, WorkType::Series), 1);   // a season, in order
 $films->availability('tmdb')->offers(WorkRef::tmdb(603), 'FR');                 // Offer[]: stream, rent, buy...
+$films->findVideo($matrix->trailer()->ref)->embed(private: true);               // the trailer's nocookie player, from omnishow/youtube
+$films->channels('youtube')->channelVideos('@example');                         // Page<Video>, newest first
+$films->live('twitch')->live('twitchdev');                                      // ?Stream: null off air
 ```
 
 The design is the one of the other Omnisense families: a provider's **factory** fills a
 configuration with its name, its required options and the defaults of the others, then builds the
 **provider**; a **registry** holds the application's providers by name. A provider says what it can
-be asked in its **capabilities** - which of the four contracts it answers, the registers it finds a
-work by, what its terms ask to be shown beside its records - and an identifier it cannot resolve
+be asked in its **capabilities** - which contracts it answers and their families, the registers it finds a
+work by, the platforms whose videos it gives, what its terms ask to be shown beside its records - and an identifier it cannot resolve
 is refused before any call. The core needs no framework: it requires
 `symfony/http-client-contracts` and nothing else.
 
@@ -42,8 +52,21 @@ the address where the provider serves it, under its terms.
 
 ## Providers
 
-Five packages. The capabilities are each provider's `capabilities()`; "Lookup by" lists the
-registers its `work()` resolves for a film, a series and an episode.
+Eight packages, one list: each implements the contracts it can fulfil.
+
+| Package | Factory name | Family | Contracts | Credentials |
+|---|---|---|---|---|
+| [`omnishow/tmdb`](https://github.com/glitchr-omnisense/omnishow-tmdb) | `tmdb` | work | search, lookup, episodes, availability; its works' videos as links to YouTube and Vimeo | a read access token or an API key |
+| [`omnishow/omdb`](https://github.com/glitchr-omnisense/omnishow-omdb) | `omdb` | work | search, lookup, episodes | an API key |
+| [`omnishow/tvdb`](https://github.com/glitchr-omnisense/omnishow-tvdb) | `tvdb` | work | search, lookup, episodes | a project key (+ a subscriber's PIN) |
+| [`omnishow/trakt`](https://github.com/glitchr-omnisense/omnishow-trakt) | `trakt` | work | search, lookup, episodes | a client id and a User-Agent |
+| [`omnishow/wikidata`](https://github.com/glitchr-omnisense/omnishow-wikidata) | `wikidata` | work | search, lookup | none (a User-Agent naming the application) |
+| [`omnishow/youtube`](https://github.com/glitchr-omnisense/omnishow-youtube) | `youtube` | video, live | video, videoSearch, channels, playlists, live (with its schedule) | an API key |
+| [`omnishow/vimeo`](https://github.com/glitchr-omnisense/omnishow-vimeo) | `vimeo` | video | video, videoSearch, channels, playlists | an access token, or a client id and secret |
+| [`omnishow/twitch`](https://github.com/glitchr-omnisense/omnishow-twitch) | `twitch` | live | live (with its schedule) | a client id and secret, or a token |
+
+The work providers in detail - "Lookup by" lists the registers its `work()` resolves for a film, a
+series and an episode:
 
 | Package | Factory name | Search | Lookup by | Episodes | Where to watch | Credentials |
 |---|---|---|---|---|---|---|
@@ -56,7 +79,7 @@ registers its `work()` resolves for a film, a series and an episode.
 Pictures: TMDB (posters, backdrops, stills, services' logos), TheTVDB (posters, stills), OMDb
 (posters), Wikidata (Wikimedia Commons files); Trakt serves none. Ratings: TMDB, OMDb (IMDb, Rotten
 Tomatoes, Metacritic), Trakt. The core's test provider, `Omnishow\Testing\FixedProvider`, answers
-all four contracts ([Testing](testing.md)). Each provider's manual lists its options, the calls it
+all four work contracts, `FixedVideoProvider` the video and live ones ([Testing](testing.md)). Each provider's manual lists its options, the calls it
 makes and its terms.
 
 ## How this manual is organised
@@ -66,11 +89,12 @@ makes and its terms.
   yet: a service definition of the application's).
 - [Models](models.md): providers, capabilities, factories, the registry, every model and enum.
 - Usage: [search](usage-search.md), [records and identifiers](usage-lookup.md),
-  [episodes](usage-episodes.md), [where to watch](usage-availability.md).
+  [episodes](usage-episodes.md), [where to watch](usage-availability.md), [videos](usage-video.md),
+  [live](usage-live.md).
 - [Configuration reference](configuration.md): the registry's configuration and every provider's
   options.
 - [Errors](errors.md): every exception and when it is thrown.
-- [Testing](testing.md): the fixed provider, the recorded HTTP client, the bare test case.
+- [Testing](testing.md): the fixed providers, the recorded HTTP client, the bare test case.
 - [The Docker harness](harness.md).
 - [Writing a provider](providers.md), and the providers' terms.
 - [Verified, and not](verified.md).

@@ -10,7 +10,7 @@ Testing an application that shows records with Omnishow. Writing a provider and 
 
 ## The fixed provider as a fake
 
-`Omnishow\Testing\FixedProvider` answers all four contracts from records given in advance, with no
+`Omnishow\Testing\FixedProvider` answers the four work contracts from records given in advance, with no
 network; `FixedProviderFactory` registers it under the name `fixed`:
 
 ```php
@@ -42,6 +42,23 @@ What it does:
   upper-cased; else `[]`.
 
 Its `getName()` is `fixed`, and the records keep the `source` they were built with.
+
+## The fixed video provider
+
+`Testing\FixedVideoProvider` answers the video and live contracts from what it was given, with no
+network: `video()` by the reference, `searchVideos()` by the words of title and description,
+`channel()` by id or handle, `channelVideos()` newest first, `playlistVideos()` in the order of the
+ids given (each video's `position` set), `live()` the channel's stream whose state is live,
+`schedule()` its upcoming ones soonest first. A page's token is the offset of its first item. It
+hosts YouTube unless told otherwise (its constructor's `$platforms`).
+
+```php
+$registry = new Registry([new FixedVideoProviderFactory([$trailer], [$channel])], ['videos' => ['factory' => 'fixed-video']]);
+$registry->findVideo(VideoRef::youtube('aqz-KE-bpKQ'));
+```
+
+The video and live providers' tests run on Symfony's `MockHttpClient`, which records every request
+with its full URL (query included), headers and body: each test asserts the exact calls made.
 
 ## A provider on recorded answers
 

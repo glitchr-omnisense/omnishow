@@ -87,6 +87,31 @@ Factory `Omnishow\Wikidata\WikidataFactory`, name `wikidata`.
 | `api` | string | `https://www.wikidata.org/w/api.php` | no | the MediaWiki API: Wikidata's, or another Wikibase's |
 | `maxlag` | int | `0` | no | `0`: not sent; a number of seconds: sent, and Wikidata refuses reads while its servers lag more (for batch jobs, as Wikimedia asks) |
 
+## omnishow/youtube
+
+| Option | Default | |
+|---|---|---|
+| `key` | - (required) | a YouTube Data API v3 key |
+| `language` | none | `hl`: titles and descriptions in this language where the owner translated them |
+| `api` | `https://www.googleapis.com/youtube/v3/` | |
+
+## omnishow/vimeo
+
+| Option | Default | |
+|---|---|---|
+| `token` | none | an access token |
+| `client_id`, `client_secret` | none | without a token: an unauthenticated token is asked once (public data) |
+| `api` | `https://api.vimeo.com/` | |
+
+## omnishow/twitch
+
+| Option | Default | |
+|---|---|---|
+| `client_id` | - (required) | the application's |
+| `client_secret` | none | an app access token is asked with it, again before it expires |
+| `token` | none | an access token got elsewhere, instead of the secret |
+| `api`, `token_url` | `https://api.twitch.tv/helix/`, `https://id.twitch.tv/oauth2/token` | |
+
 ## Per call
 
 What a call covers is its arguments: the `Query` (words, type, year, language, limit), the
@@ -94,7 +119,10 @@ What a call covers is its arguments: the `Query` (words, type, year, language, l
 ([Models](models.md)). A `language` given to a call replaces the provider's `language` option for
 that call.
 
-## The fixed provider (testing)
+## The fixed providers (testing)
 
 `Omnishow\Testing\FixedProviderFactory`, name `fixed`, takes its records and offers in its
 constructor (`new FixedProviderFactory($works, $offers)`) and no option.
+`Omnishow\Testing\FixedVideoProviderFactory`, name `fixed-video`, takes its videos, channels,
+playlists, playlists' items and streams (`new FixedVideoProviderFactory($videos, $channels,
+$playlists, $items, $streams)`) and no option.
