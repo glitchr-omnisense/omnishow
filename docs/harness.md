@@ -11,6 +11,7 @@ the image `omnisense/omnishow-harness`:
 ```sh
 cd docker
 echo 'OMNISHOW_PLUGINS=../..' > .env      # the providers' checkouts beside the core
+echo 'OMNISENSE_CONTRACTS=../../../omnisense-contracts' >> .env   # the kernel's checkout, beside the family's folder
 docker compose run --rm omnishow test     # every package's tests, recorded answers, no network
 docker compose run --rm omnishow bare     # the bare script: what omnishow does and what PHP loaded
 docker compose run --rm omnishow live     # the checks that need no key (Wikidata)
@@ -29,6 +30,9 @@ update` when the `composer.json` changed:
   checkout under `OMNISHOW_PLUGINS` when there is one - `docker/.env`, git-ignored, sets it to
   `../..` when the core sits in the workspace beside the providers - else from GitHub
   (`https://github.com/glitchr-omnisense/omnishow-<slug>.git`, branch 1.x);
+- omnisense/contracts, the kernel the family builds on, from its checkout under
+  `OMNISENSE_CONTRACTS` (mounted at `/omnisense/contracts`; its tests run with the family's) when
+  there is one, else from GitHub (`https://github.com/glitchr-omnisense/contracts.git`, branch 1.x);
 - PHPUnit 11, PHPStan 2.1 and `symfony/http-client` for the tests;
 - one PHPUnit suite per package, and `/harness/packages/<slug>` linking to each provider.
 

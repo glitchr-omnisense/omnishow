@@ -2,7 +2,9 @@
 
 namespace Omnishow\Exception;
 
-/** Every exception omnishow throws. */
-interface OmnishowException extends \Throwable
+use Omnisense\Contracts\Exception\ExceptionInterface;
+
+/** Every exception omnishow throws (and omnisense/contracts' interface, so one catch holds every family's). */
+interface OmnishowException extends ExceptionInterface
 {
 }

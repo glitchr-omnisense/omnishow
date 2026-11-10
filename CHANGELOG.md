@@ -2,6 +2,21 @@
 
 ## Unreleased (1.x)
 
+### Added
+- On omnisense/contracts, the kernel every family builds on (2026-11-10). Config, ProviderInterface,
+  ProviderFactoryInterface, ProviderFactory (populate() and build() as before), Registry,
+  Http\JsonClient, Data, Redaction, Testing\RecordedHttpClient, RecordedResponse and BareTestCase
+  keep their names and their API, each a thin subclass of the kernel's (`bin/load-all.php` moved
+  there); JsonClient gains `bytes()` and takes the provider's Backoff. Usage policies:
+  `Capabilities::policy()` (given, or made of `$attribution`, `$terms` and `$keyless`, now
+  deprecated), every call through `search()`, `lookup()`, `episodes()`, `availability()`, `video()`,
+  `videoSearch()`, `channels()`, `playlists()` and `live()` guarded (`Policy\Guarded*`), `work()`
+  and `findVideo()` through them; a site's configuration tightening a policy (`policy`, `usage`),
+  `Registry::policy()`, `policies()`, `guard()`, `names()` by contract, a shared limiter as the
+  registry's third argument, `Exception\UsageLimitReachedException`. The harness installs
+  omnisense/contracts from its checkout (OMNISENSE_CONTRACTS) and runs its tests too.
+  docs/policies.md.
+
 ### Changed
 - `omnisense/omnishow` continues `omnisense/omnifilm`, merged into it on 2026-11-09: the namespace
   `Omnifilm\` is `Omnishow\` (`OmnifilmException` is `OmnishowException`), the configuration keys

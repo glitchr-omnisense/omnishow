@@ -2,9 +2,9 @@
 
 namespace Omnishow\Http;
 
+use Omnisense\Contracts\Policy\Backoff;
 use Omnishow\Exception\ProviderException;
 use Omnishow\Exception\UnreachableException;
-use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -17,12 +17,18 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  * a copy of the client's (Redaction::copy(): same class and code, the key
  * masked in its message), and neither keeps its trace's arguments, where the
  * request's query and headers stood.
+ *
+ * Given the provider's Backoff (Config::backoff() in a factory's build()),
+ * it waits while the provider asked to and reads every response's
+ * Retry-After and RateLimit fields: a 429 is a UsageLimitReachedException
+ * with the wait asked (omnisense/contracts' JsonClient underneath).
  */
-final class JsonClient
+final class JsonClient extends \Omnisense\Contracts\Http\JsonClient
 {
     /** @param array<string, string> $headers sent with every request */
-    public function __construct(private readonly HttpClientInterface $http, private readonly string $provider, private readonly array $headers = [])
+    public function __construct(HttpClientInterface $http, string $provider, array $headers = [], ?Backoff $backoff = null)
     {
+        parent::__construct($http, $provider, $headers, $backoff);
     }
 
     /**
@@ -33,7 +39,7 @@ final class JsonClient
      */
     public function get(string $url, array $query = [], array $headers = []): ?Data
     {
-        return $this->request('GET', $url, ['query' => array_filter($query, static fn ($value) => null !== $value)], $headers);
+        return self::own(parent::get($url, $query, $headers));
     }
 
     /**
@@ -44,44 +50,27 @@ final class JsonClient
      */
     public function request(string $method, string $url, array $options = [], array $headers = []): ?Data
     {
-        $what = $method.' '.(parse_url($url, \PHP_URL_PATH) ?: '/');
-        $options = ['headers' => $headers + $this->headers] + $options;
-        try {
-            $response = $this->http->request($method, $url, $options);
-            $status = $response->getStatusCode();
-            if (404 === $status) {
-                return null;
-            }
-            $body = $response->getContent(false);
-        } catch (ExceptionInterface $e) {
-            throw Redaction::withoutArguments(new UnreachableException(\sprintf('%s could not be reached for %s: %s', $this->provider, $what, self::reason($e->getMessage())), 0, Redaction::copy($e, Redaction::secrets($url, $options))));
-        }
-        if ($status >= 400) {
-            throw Redaction::withoutArguments(ProviderException::answered($this->provider, $what, $status, Redaction::text($body, Redaction::secrets($url, $options))));
-        }
-        $data = json_decode($body, true);
-
-        return \is_array($data) ? new Data($data) : throw Redaction::withoutArguments(ProviderException::answered($this->provider, $what, $status, 'The body is not JSON.'));
+        return self::own(parent::request($method, $url, $options, $headers));
     }
 
-    /**
-     * An HTTP client's message without the addresses it quotes: Symfony's
-     * ' for "<url>"' dropped, any other address cut to its scheme, host and
-     * path (no credentials, no query, no fragment).
-     */
-    public static function reason(string $message): string
+    /** @param array<mixed> $data */
+    protected function data(array $data): Data
     {
-        $message = (string) preg_replace('~\s+for\s+"[a-z][a-z0-9+.\-]*://[^"]*"~i', '', $message);
-        $message = (string) preg_replace_callback('~[a-z][a-z0-9+.\-]*://[^\s"\'<>]+~i', static function (array $match): string {
-            $parts = parse_url($match[0]);
-            if (false === $parts || !isset($parts['scheme'], $parts['host'])) {
-                return '(an address)';
-            }
+        return new Data($data);
+    }
 
-            return $parts['scheme'].'://'.$parts['host'].(isset($parts['port']) ? ':'.$parts['port'] : '').($parts['path'] ?? '');
-        }, $message);
-        $message = rtrim(trim($message), '.');
+    protected function answered(string $what, int $status, string $detail): \Throwable
+    {
+        return ProviderException::answered($this->provider, $what, $status, $detail);
+    }
 
-        return '' !== $message ? $message.'.' : 'no reason given.';
+    protected function unreachable(string $message, \Throwable $previous): \Throwable
+    {
+        return new UnreachableException($message, 0, $previous);
+    }
+
+    private static function own(?\Omnisense\Contracts\Http\Data $data): ?Data
+    {
+        return null === $data || $data instanceof Data ? $data : new Data($data->toArray());
     }
 }

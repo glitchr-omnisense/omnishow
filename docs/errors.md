@@ -14,6 +14,12 @@ Every exception Omnishow throws implements `Omnishow\Exception\OmnishowException
 | `NotSupportedException` | `\LogicException` | a provider asked for what it does not do: a contract it lacks (`Registry::availability()` on OMDb), a register it does not resolve for that type. Thrown before any call |
 | `ProviderException` | `\RuntimeException` | the provider answered, and not with what was asked: a status of 400 or more but 404, a body that is not JSON, an error inside a 200 (OMDb's `"Response": "False"`, Wikidata's `error`), TheTVDB giving no token |
 | `UnreachableException` | `\RuntimeException` | the provider could not be reached: a network error, a timeout |
+| `UsageLimitReachedException` | omnisense/contracts' `UsageLimitReached` (`\RuntimeException`) | a call refused before it was made: a rate limit of the provider's usage policy (as the site tightened it) reached, or the provider asked to wait (a 429 and its `Retry-After`, a `RateLimit` field with nothing left); `$retryAfter` in seconds, `$limit` the limit reached. See [Usage policies](policies.md) |
+
+`OmnishowException` extends omnisense/contracts' `ExceptionInterface`: one catch holds every
+omnisense family's exceptions. A site's configuration that loosens a provider's policy is
+omnisense/contracts' `InvalidPolicyException`, a site whose use the terms forbid its
+`UsageNotPermitted`, both when the provider is first asked through its contract.
 
 Not an exception: a work, a series or a season the provider does not know - a 404 included - is
 `null` (`work()`) or `[]` (`search()`, `episodes()`, `offers()`).

@@ -10,9 +10,9 @@ namespace Omnishow;
  * video: a video's record (VideoInterface), a search (VideoSearchInterface),
  * a channel's videos (ChannelInterface), playlists (PlaylistInterface);
  * live: a channel's stream and schedule (LiveInterface) - and what its
- * terms ask of whoever shows its records.
+ * usage policy: its rate limits, what its terms ask of whoever shows its records.
  */
-interface ProviderInterface
+interface ProviderInterface extends \Omnisense\Contracts\Provider\ProviderInterface
 {
     /** The factory's name: "tmdb", "wikidata", "youtube"... */
     public function getName(): string;

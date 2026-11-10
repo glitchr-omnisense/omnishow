@@ -93,6 +93,8 @@ makes and its terms.
   [live](usage-live.md).
 - [Configuration reference](configuration.md): the registry's configuration and every provider's
   options.
+- [Usage policies](policies.md): each provider's rate limits and rights, declared as data, the
+  guard on every call, a site's tightening.
 - [Errors](errors.md): every exception and when it is thrown.
 - [Testing](testing.md): the fixed providers, the recorded HTTP client, the bare test case.
 - [The Docker harness](harness.md).

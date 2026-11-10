@@ -2,6 +2,8 @@
 
 namespace Omnishow;
 
+use Omnisense\Contracts\Policy\UsagePolicy;
+use Omnisense\Contracts\Provider\CapabilitiesInterface;
 use Omnishow\Model\Platform;
 use Omnishow\Model\Scheme;
 use Omnishow\Model\VideoRef;
@@ -11,15 +13,36 @@ use Omnishow\Model\WorkType;
 /**
  * What a provider is, said before it is asked anything: what it can do, the
  * registers it finds a work by, the platforms whose videos it gives, and
- * what its terms ask of whoever shows its records.
+ * its usage policy: its rate limits and what its terms ask of whoever shows
+ * its records.
  *
  * Its contracts fall in three families (families()): work - a film's, a
  * series' or an episode's record (search, lookup, episodes, availability);
  * video - a video hosted elsewhere (video, videoSearch, channels,
  * playlists); live - a live stream (live, and its schedule).
+ *
+ * The policy is omnisense/contracts' UsagePolicy. The three fields written
+ * before it ($attribution, $terms, $keyless) stay, read from the policy
+ * when it is given and they are not: a provider that gives them alone gets
+ * a policy made of them, its limits unknown (UsagePolicy::described()).
  */
-final readonly class Capabilities
+final readonly class Capabilities implements CapabilitiesInterface
 {
+    /** @deprecated since 1.x, read policy()->rights->attribution->text */
+    public ?string $attribution;
+
+    /**
+     * @var list<string>
+     *
+     * @deprecated since 1.x, read policy()->provenance (terms, policy)
+     */
+    public array $terms;
+
+    /** @deprecated since 1.x, read policy()->requirements->key */
+    public bool $keyless;
+
+    private UsagePolicy $policy;
+
     /**
      * @param bool                      $search       it searches by title (SearchInterface)
      * @param bool                      $lookup       it gives a work's record by an identifier (LookupInterface)
@@ -39,6 +62,7 @@ final readonly class Capabilities
      * @param bool                      $live         it says whether a channel is live, and its stream (LiveInterface)
      * @param bool                      $schedule     LiveInterface::schedule() reads a schedule the platform keeps
      * @param list<Platform>            $platforms    the platforms whose videos and streams it gives
+     * @param ?UsagePolicy              $policy       its usage policy; made of $attribution, $terms and $keyless when null
      */
     public function __construct(
         public bool $search = false,
@@ -49,9 +73,9 @@ final readonly class Capabilities
         public array $lookupBy = [],
         public bool $images = false,
         public bool $credits = false,
-        public ?string $attribution = null,
-        public array $terms = [],
-        public bool $keyless = false,
+        ?string $attribution = null,
+        array $terms = [],
+        bool $keyless = false,
         public bool $video = false,
         public bool $videoSearch = false,
         public bool $channels = false,
@@ -59,7 +83,17 @@ final readonly class Capabilities
         public bool $live = false,
         public bool $schedule = false,
         public array $platforms = [],
+        ?UsagePolicy $policy = null,
     ) {
+        $this->policy = $policy ?? UsagePolicy::described(UsagePolicy::UNNAMED, $attribution, null, $terms, $keyless);
+        $this->attribution = $attribution ?? $policy?->rights->attribution->text;
+        $this->terms = [] !== $terms || null === $policy ? $terms : array_values(array_unique(array_filter([$policy->provenance->terms, $policy->provenance->policy])));
+        $this->keyless = $keyless || (null !== $policy && !$policy->requirements->key);
+    }
+
+    public function policy(): UsagePolicy
+    {
+        return $this->policy;
     }
 
     /** Whether LookupInterface::work() finds this work by this register. */
@@ -114,6 +148,7 @@ final readonly class Capabilities
             'keyless' => $this->keyless,
             'platforms' => array_map(static fn (Platform $platform) => $platform->value, $this->platforms),
             'schedule' => $this->schedule,
+            'policy' => $this->policy->toArray(),
         ];
     }
 }

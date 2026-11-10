@@ -7,16 +7,24 @@ order: 40
 
 ## The registry's configuration
 
-`new Registry($factories, $config)` takes the providers by name, each with its factory and options:
+`new Registry($factories, $config, $limiter)` takes the providers by name, each with its factory
+and options:
 
 ```php
 [
     '<provider name>' => [
         'factory' => '<factory name>',     // required: a factory's getName()
         'options' => [/* ... */],          // optional, default []: handed to the factory's create()
+        'policy' => [/* ... */],           // optional: a tightening of the provider's usage policy, never looser
+        'usage' => [/* ... */],            // optional: commercial, open_source, contract - what the site is
     ],
 ]
 ```
+
+`policy` and `usage` may sit in `options` too; `$limiter` (omnisense/contracts'
+`RateLimiterInterface`, optional) is where every provider's calls are counted - an in-memory one by
+default, a shared one for an application served by many processes. See
+[Usage policies](policies.md).
 
 The provider name is the application's (`open`, `tmdb`, `scores`); the factory name is the
 package's. The order matters to `Registry::work()` called without names: it asks the providers in

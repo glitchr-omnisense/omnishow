@@ -32,7 +32,16 @@ framework-free).
 4. **Tests**: recorded answers in `Tests/Fixtures` (captured from the service when it needs no
    key, trimmed; written after its reference otherwise, and said so), a `BareTest` extending
    `Testing\BareTestCase`, a `LiveTest` in the group `live` for a keyless service only.
-5. **README**: options, the service's terms as read (attribution, limits, caching, commercial
+5. **Its usage policy, as data**: a `policy.json` beside the provider (omnisense/contracts'
+   schema: rate limits, rights, attribution, requirements, `provenance` with the pages read and
+   `verifiedAt`), named in `composer.json` (`"extra": {"omnisense": {"policy": "policy.json"}}`);
+   the provider implements `DeclaresUsagePolicyInterface` (`usagePolicy()`: `UsagePolicy::fromFile()`)
+   and gives it to its `Capabilities` (`policy:`); the factory gives its `JsonClient` the
+   provider's Backoff (`$c->backoff()`, its last argument). What the terms do not say is unknown,
+   never guessed. Its `Tests/PolicyTest.php`: the policy as declared, a limit reached through the
+   registry with the call never made, a 429 and its `Retry-After` honoured, a loosening refused.
+   See [Usage policies](policies.md) and contracts' `docs/declare-your-policy.md`.
+6. **README**: options, the service's terms as read (attribution, limits, caching, commercial
    use), "Verified, and not".
 
 ## The record
@@ -196,10 +205,12 @@ namespace).
 
 ## The providers' terms, in short
 
+As each package's `policy.json` declares them (read on 2026-11-10; [Usage policies](policies.md)):
+
 | Provider | Attribution | Limits and use |
 |---|---|---|
 | tmdb | "uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB" + TMDB's logo; JustWatch for where to watch | no commercial use without an agreement; no cache older than 6 months |
 | omdb | its data is CC BY-NC 4.0 | non-commercial; free keys 1,000 requests a day |
 | tvdb | "Metadata provided by TheTVDB. Please consider adding missing information or subscribing." with a link | licensed (commercial or individual; discounts for open source) |
-| trakt | credit and link | 1,000 GET calls every 5 minutes per application (documented rate limit) |
+| trakt | "[App name] uses Trakt but is not endorsed or certified by Trakt", on an About or credits page | 500 GET calls every 5 minutes per client ID and IP (developer guides, 2026-11-10; the deprecated reference said 1,000) |
 | wikidata | data CC0; Commons pictures under their own licences | a User-Agent naming the application and a contact; serial requests |

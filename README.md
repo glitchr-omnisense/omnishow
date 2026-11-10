@@ -47,8 +47,33 @@ echo $now?->embed(parent: 'example.org');
 $next = $shows->live('twitch')->schedule('twitchdev');
 ```
 
-Plain PHP: no container, no framework. The core requires only `symfony/http-client-contracts`
-(interfaces); a provider requires `symfony/http-client` and takes the application's client.
+Plain PHP: no container, no framework. The core requires `omnisense/contracts` (the kernel every
+omnisense family builds on: provider, factory, registry, JSON client, usage policies, testing kit)
+and `symfony/http-client-contracts` (interfaces); a provider requires `symfony/http-client` and
+takes the application's client.
+
+## Usage policies
+
+Each provider declares its usage policy as data (its `policy.json`: rate limits, rights,
+attribution, requirements, where and when it was read), and every call through the registry's
+contracts (`search()`, `lookup()`, `episodes()`, `availability()`, `video()`, `videoSearch()`,
+`channels()`, `playlists()`, `live()`, and `work()`, `findVideo()` through them) is held to it:
+checked before, counted after, refused with `UsageLimitReachedException` once a limit is reached or
+while the provider asks to wait (a 429 and its `Retry-After`, a `RateLimit` field with nothing
+left). A site may tighten a policy in its configuration, never loosen it:
+
+```php
+'videos' => [
+    'factory' => 'youtube',
+    'options' => ['key' => '...'],
+    'policy' => ['rateLimits' => [['max' => 50, 'window' => 'day', 'operations' => ['searchVideos', 'live', 'schedule']]]],
+    'usage' => ['commercial' => false],
+],
+```
+
+`$shows->policy('videos')` gives the policy as the site runs it, `policies()` every one (for a
+page of the data's terms). Pass a shared `RateLimiterInterface` as the registry's third argument
+when the application runs in many processes. See [docs/policies.md](docs/policies.md).
 
 ## The shape
 
@@ -115,6 +140,7 @@ The manual, in `docs/`:
 - [Models](docs/models.md): contracts, capabilities, the registry, every model and enum
 - Usage: [search](docs/usage-search.md), [records and identifiers](docs/usage-lookup.md), [episodes](docs/usage-episodes.md), [where to watch](docs/usage-availability.md), [videos](docs/usage-video.md), [live](docs/usage-live.md)
 - [Configuration reference](docs/configuration.md)
+- [Usage policies](docs/policies.md): each provider's, the guard, a site's tightening
 - [Errors](docs/errors.md)
 - [Testing](docs/testing.md)
 - [The harness](docs/harness.md)
