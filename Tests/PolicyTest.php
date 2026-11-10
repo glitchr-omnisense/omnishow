@@ -17,6 +17,7 @@ use Omnishow\Model\Query;
 use Omnishow\Model\WorkRef;
 use Omnishow\Policy\GuardedLookup;
 use Omnishow\Policy\GuardedSearch;
+use Omnishow\Policy\MeasuresUsageInterface;
 use Omnishow\ProviderFactory;
 use Omnishow\ProviderInterface;
 use Omnishow\Registry;
@@ -133,6 +134,65 @@ final class PolicyTest extends TestCase
         self::assertSame(['https://x.example/terms', 'https://x.example/api'], $capabilities->terms);
         self::assertTrue($capabilities->keyless);
         self::assertSame('Mine', (new Capabilities(attribution: 'Mine', policy: $policy))->attribution, 'a field given stays as given');
+    }
+
+    public function testAProviderThatMeasuresACallIsCountedByWhatItSays(): void
+    {
+        // A search counted by its letters (as YouTube's videos() by its requests of 50): the amount given before the call.
+        $registry = new Registry([self::measuring()], ['films' => ['factory' => 'measuring', 'policy' => ['rateLimits' => [['max' => 10, 'window' => 'day', 'unit' => 'units']]]]]);
+
+        $registry->search('films')->search(new Query('abcd'));
+        self::assertSame(6, $registry->guard('films')->remaining('search'), '4 units spent');
+        try {
+            $registry->search('films')->search(new Query('Stalker'));
+            self::fail('A search of 7 units went through with 6 left.');
+        } catch (UsageLimitReachedException $e) {
+            self::assertSame(10, $e->limit?->max);
+        }
+        $registry->search('films')->search(new Query('abc'));
+        self::assertSame(3, $registry->guard('films')->remaining('search'));
+    }
+
+    private static function measuring(): ProviderFactory
+    {
+        return new class extends ProviderFactory {
+            protected function populate(Config $c): void
+            {
+                $c->defaults(['omnishow.factory_name' => 'measuring', 'omnishow.required_options' => []]);
+            }
+
+            protected function build(Config $c): ProviderInterface
+            {
+                return new class implements ProviderInterface, SearchInterface, MeasuresUsageInterface {
+                    public function getName(): string
+                    {
+                        return 'measuring';
+                    }
+
+                    public function getTitle(): string
+                    {
+                        return 'Measuring';
+                    }
+
+                    public function capabilities(): Capabilities
+                    {
+                        return new Capabilities(search: true);
+                    }
+
+                    public function search(Query $query): array
+                    {
+                        return [];
+                    }
+
+                    public function usage(string $operation, array $arguments): array
+                    {
+                        $query = $arguments[0] ?? null;
+
+                        return 'search' === $operation && $query instanceof Query ? ['units' => \strlen($query->text)] : [];
+                    }
+                };
+            }
+        };
     }
 
     /** A provider over HTTP, its JsonClient given the provider's Backoff: a search is one GET /search. */

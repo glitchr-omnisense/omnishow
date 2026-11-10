@@ -22,11 +22,11 @@ final class GuardedLive extends Guarded implements LiveInterface
 
     public function live(string $channel): ?Stream
     {
-        return $this->guard->call('live', fn () => $this->provider->live($channel));
+        return $this->guard->call('live', fn () => $this->provider->live($channel), amounts: $this->amounts('live', [$channel]));
     }
 
     public function schedule(string $channel, int $limit = 10): array
     {
-        return $this->guard->call('schedule', fn () => $this->provider->schedule($channel, $limit));
+        return $this->guard->call('schedule', fn () => $this->provider->schedule($channel, $limit), amounts: $this->amounts('schedule', [$channel, $limit]));
     }
 }

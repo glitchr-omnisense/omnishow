@@ -22,6 +22,6 @@ final class GuardedAvailability extends Guarded implements AvailabilityInterface
 
     public function offers(WorkRef $ref, string $country): array
     {
-        return $this->guard->call('offers', fn () => $this->provider->offers($ref, $country));
+        return $this->guard->call('offers', fn () => $this->provider->offers($ref, $country), amounts: $this->amounts('offers', [$ref, $country]));
     }
 }

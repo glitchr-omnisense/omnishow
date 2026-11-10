@@ -16,12 +16,12 @@ guessed.
 |---|---|---|
 | omnishow/omdb | 1,000 a day per key | commercial use, storage and redistribution forbidden; CC BY-NC 4.0, credited |
 | omnishow/tmdb | 40 a second ("in the 40 requests per second range") | commercial use under a written agreement; cached 6 months at most; TMDB's credit and logo, JustWatch's for where to watch |
-| omnishow/trakt | 100 a minute (Trakt's 500 GET calls every 5 minutes) | commercial use free; no redistribution as a feed; the credit on an About or credits page; a User-Agent with a version |
+| omnishow/trakt | 500 every 5 minutes (`"every": 5`) | commercial use free; no redistribution as a feed; the credit on an About or credits page; a User-Agent with a version |
 | omnishow/tvdb | unknown (none published) | free with the credit under US$50,000 of revenue, licences above (contract); no redistribution; images not covered |
-| omnishow/wikidata | 200 a minute (Wikimedia's 2026 limit for a client with a compliant User-Agent) | CC0; Commons pictures under their own licences; a User-Agent with a name, a version and a contact |
-| omnishow/youtube | 100 a day on `searchVideos`, `live`, `schedule` (search.list); 10,000 a day on every operation (the units' upper bound) | data kept 30 days at most; no redistribution; YouTube shown as the source |
+| omnishow/wikidata | 200 a minute (Wikimedia's 2026 limit for a client with a compliant User-Agent), one request at a time (`"concurrency": 1`) | CC0; Commons pictures under their own licences; a User-Agent with a name, a version and a contact |
+| omnishow/youtube | 100 a day on `searchVideos`, `live`, `schedule` (search.list's own bucket); 10,000 units a day, each operation costing the units of the methods it makes | data kept 30 days at most; no redistribution; YouTube shown as the source |
 | omnishow/vimeo | unknown (the account's plan: 25 to 2,500 a minute) | charging users needs Vimeo's written authorisation; no datasets, no AI training |
-| omnishow/twitch | unknown (the points bucket's size is not stated as policy) | cached 24 hours at most; no redistribution nor monetizing; a clear path to the source |
+| omnishow/twitch | unknown (the points bucket's size is not stated as policy); `Ratelimit-Remaining` and `Ratelimit-Reset` (a Unix time) read | cached 24 hours at most; no redistribution nor monetizing; a clear path to the source |
 
 Each `policy.json`'s `provenance.notes` holds the details and the pages read.
 
@@ -41,9 +41,14 @@ A call over a limit is never made: `UsageLimitReachedException` (an `OmnishowExc
 `Retry-After`, a `RateLimit: "...";r=0;t=30` field - holds every following call of that provider
 until the wait is over.
 
-The guard counts operations, and a provider's terms count requests: an operation that makes
-several requests (YouTube's `channelVideos`: channels.list, playlistItems.list, videos.list) counts
-once. YouTube's 10,000 units a day are therefore declared as 10,000 operations, an upper bound.
+The guard counts operations, and a provider's terms count requests or units: a limit says its
+`unit` (`requests` by default, `units`, `points`, `characters`...) and the `cost` of an operation
+in it, 1 when not named (YouTube's `channelVideos`: channels.list, playlistItems.list, videos.list,
+3 units). A window of several minutes is `"every"` (`{"max": 500, "window": "minute", "every":
+5}`). Where only the call's arguments say what it consumes (YouTube's `videos()`, one unit per 50
+videos), the provider implements `Policy\MeasuresUsageInterface` and the guard counts what its
+`usage()` gives. `concurrency` says how many requests may be in flight at once: declared, not
+enforced (a PHP process sends one at a time).
 
 ## A site's configuration
 

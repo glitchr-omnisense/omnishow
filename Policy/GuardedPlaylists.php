@@ -23,16 +23,16 @@ final class GuardedPlaylists extends Guarded implements PlaylistInterface
 
     public function playlist(string $id): ?Playlist
     {
-        return $this->guard->call('playlist', fn () => $this->provider->playlist($id));
+        return $this->guard->call('playlist', fn () => $this->provider->playlist($id), amounts: $this->amounts('playlist', [$id]));
     }
 
     public function playlists(string $channel, ?string $page = null, int $limit = 25): Page
     {
-        return $this->guard->call('playlists', fn () => $this->provider->playlists($channel, $page, $limit));
+        return $this->guard->call('playlists', fn () => $this->provider->playlists($channel, $page, $limit), amounts: $this->amounts('playlists', [$channel, $page, $limit]));
     }
 
     public function playlistVideos(string $id, ?string $page = null, int $limit = 25): Page
     {
-        return $this->guard->call('playlistVideos', fn () => $this->provider->playlistVideos($id, $page, $limit));
+        return $this->guard->call('playlistVideos', fn () => $this->provider->playlistVideos($id, $page, $limit), amounts: $this->amounts('playlistVideos', [$id, $page, $limit]));
     }
 }

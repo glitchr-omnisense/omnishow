@@ -22,6 +22,6 @@ final class GuardedSearch extends Guarded implements SearchInterface
 
     public function search(Query $query): array
     {
-        return $this->guard->call('search', fn () => $this->provider->search($query));
+        return $this->guard->call('search', fn () => $this->provider->search($query), amounts: $this->amounts('search', [$query]));
     }
 }

@@ -22,6 +22,6 @@ final class GuardedEpisodes extends Guarded implements EpisodesInterface
 
     public function episodes(WorkRef $series, int $season, ?string $language = null): array
     {
-        return $this->guard->call('episodes', fn () => $this->provider->episodes($series, $season, $language));
+        return $this->guard->call('episodes', fn () => $this->provider->episodes($series, $season, $language), amounts: $this->amounts('episodes', [$series, $season, $language]));
     }
 }

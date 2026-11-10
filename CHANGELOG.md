@@ -2,6 +2,14 @@
 
 ## Unreleased (1.x)
 
+### Added (omnisense/contracts' round 2)
+- `Policy\MeasuresUsageInterface`: a provider whose call consumes what only its arguments say
+  (YouTube's `videos()`, one quota unit per 50 videos) gives it by unit through `usage()`, and
+  every `Guarded*` method passes it to the guard as `amounts`; a provider without it is counted by
+  its policy's costs, as before. Needs omnisense/contracts at 5bac28b or later (`amounts`; still
+  `^1.0@dev`, untagged). docs/policies.md: `every`, `unit`, `cost` and `concurrency` in a
+  provider's policy, the table as the providers now declare them.
+
 ### Added
 - On omnisense/contracts, the kernel every family builds on (2026-11-10). Config, ProviderInterface,
   ProviderFactoryInterface, ProviderFactory (populate() and build() as before), Registry,

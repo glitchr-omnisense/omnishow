@@ -23,11 +23,11 @@ final class GuardedVideo extends Guarded implements VideoInterface
 
     public function video(VideoRef $ref): ?Video
     {
-        return $this->guard->call('video', fn () => $this->provider->video($ref));
+        return $this->guard->call('video', fn () => $this->provider->video($ref), amounts: $this->amounts('video', [$ref]));
     }
 
     public function videos(array $refs): array
     {
-        return $this->guard->call('videos', fn () => $this->provider->videos($refs));
+        return $this->guard->call('videos', fn () => $this->provider->videos($refs), amounts: $this->amounts('videos', [$refs]));
     }
 }

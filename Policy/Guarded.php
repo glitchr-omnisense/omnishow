@@ -44,4 +44,17 @@ abstract class Guarded implements ProviderInterface
     {
         return $this->guard;
     }
+
+    /**
+     * What a call consumes where the provider measures it
+     * (MeasuresUsageInterface), by unit; [] for the policy's costs.
+     *
+     * @param list<mixed> $arguments
+     *
+     * @return array<string, int>
+     */
+    protected function amounts(string $operation, array $arguments): array
+    {
+        return $this->provider instanceof MeasuresUsageInterface ? $this->provider->usage($operation, $arguments) : [];
+    }
 }

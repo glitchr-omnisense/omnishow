@@ -23,6 +23,6 @@ final class GuardedVideoSearch extends Guarded implements VideoSearchInterface
 
     public function searchVideos(VideoQuery $query): Page
     {
-        return $this->guard->call('searchVideos', fn () => $this->provider->searchVideos($query));
+        return $this->guard->call('searchVideos', fn () => $this->provider->searchVideos($query), amounts: $this->amounts('searchVideos', [$query]));
     }
 }

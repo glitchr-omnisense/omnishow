@@ -23,6 +23,6 @@ final class GuardedLookup extends Guarded implements LookupInterface
 
     public function work(WorkRef $ref, ?string $language = null): ?Work
     {
-        return $this->guard->call('work', fn () => $this->provider->work($ref, $language));
+        return $this->guard->call('work', fn () => $this->provider->work($ref, $language), amounts: $this->amounts('work', [$ref, $language]));
     }
 }

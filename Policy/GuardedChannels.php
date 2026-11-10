@@ -23,11 +23,11 @@ final class GuardedChannels extends Guarded implements ChannelInterface
 
     public function channel(string $channel): ?Channel
     {
-        return $this->guard->call('channel', fn () => $this->provider->channel($channel));
+        return $this->guard->call('channel', fn () => $this->provider->channel($channel), amounts: $this->amounts('channel', [$channel]));
     }
 
     public function channelVideos(string $channel, ?string $page = null, int $limit = 25): Page
     {
-        return $this->guard->call('channelVideos', fn () => $this->provider->channelVideos($channel, $page, $limit));
+        return $this->guard->call('channelVideos', fn () => $this->provider->channelVideos($channel, $page, $limit), amounts: $this->amounts('channelVideos', [$channel, $page, $limit]));
     }
 }
