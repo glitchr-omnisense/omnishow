@@ -52,6 +52,36 @@ omnisense family builds on: provider, factory, registry, JSON client, usage poli
 and `symfony/http-client-contracts` (interfaces); a provider requires `symfony/http-client` and
 takes the application's client.
 
+## Install and a first call
+
+```sh
+composer require omnisense/omnishow omnishow/wikidata
+```
+
+```php
+<?php
+
+require __DIR__.'/vendor/autoload.php';
+
+use Omnishow\Model\WorkRef;
+use Omnishow\Registry;
+use Omnishow\Wikidata\WikidataFactory;
+
+$shows = new Registry([new WikidataFactory()], [
+    // Wikimedia asks every client to say who it is: a name and a contact.
+    'open' => ['factory' => 'wikidata', 'options' => ['user_agent' => 'MySite/1.0 (https://example.org; films@example.org)']],
+]);
+$stalker = $shows->lookup('open')->work(WorkRef::imdb('tt0079944'), 'en');
+echo $stalker->title, ' (', $stalker->year, ') ', $stalker->ref(\Omnishow\Model\Scheme::Wikidata), "\n";
+// Stalker (1979) movie:wikidata:Q200437
+```
+
+Wikidata needs no account and no key: this call reaches the real service. Every other provider
+needs an account (the table under [Providers](#providers) says which key); with none, the core's
+`Testing\FixedProvider` answers from records given in advance
+([docs/installation.md](docs/installation.md) has that script, no network) and
+`Testing\RecordedHttpClient` replays recorded answers.
+
 ## Usage policies
 
 Each provider declares its usage policy as data (its `policy.json`: rate limits, rights,
